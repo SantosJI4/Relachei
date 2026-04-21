@@ -235,7 +235,7 @@ async def get_feed(request: Request, page: int = 1, per_page: int = 20):
     base_url = str(request.base_url).rstrip("/")
     conn     = get_db()
     rows     = conn.execute(
-        "SELECT * FROM episodes ORDER BY created_at DESC LIMIT ? OFFSET ?",
+        "SELECT * FROM episodes ORDER BY novela_title ASC, episode_number ASC LIMIT ? OFFSET ?",
         (per_page, offset)
     ).fetchall()
     total = conn.execute("SELECT COUNT(*) FROM episodes").fetchone()[0]
