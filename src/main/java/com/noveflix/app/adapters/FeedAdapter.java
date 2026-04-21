@@ -31,19 +31,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
         this.listener = listener;
     }
 
-    @Override
     public EpisodeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_episode_feed, parent, false);
         return new EpisodeViewHolder(view);
     }
 
-    @Override
     public void onBindViewHolder(EpisodeViewHolder holder, int position) {
         holder.bind(episodes.get(position), listener);
     }
 
-    @Override
     public int getItemCount() {
         return episodes.size();
     }
@@ -122,13 +119,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
 
             // Play / desbloqueio ao tocar
             itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
                     listener.onPlayEpisode(episode);
                 }
             });
             ivPlayBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
                     listener.onPlayEpisode(episode);
                 }
@@ -136,7 +131,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
 
             // Like
             ivLikeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
                     boolean newLiked = !episode.isLiked();
                     listener.onLikeEpisode(episode, newLiked);
@@ -148,7 +142,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
 
             // Compartilhar
             ivShareBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
                     listener.onShareEpisode(episode);
                 }

@@ -17,7 +17,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_DELAY = 2200;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -54,7 +53,6 @@ public class SplashActivity extends AppCompatActivity {
 
         // Navega para MainActivity após delay
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
             public void run() {
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);

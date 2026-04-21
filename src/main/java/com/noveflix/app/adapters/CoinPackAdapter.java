@@ -27,19 +27,16 @@ public class CoinPackAdapter extends RecyclerView.Adapter<CoinPackAdapter.CoinPa
         this.listener = listener;
     }
 
-    @Override
     public CoinPackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_coin_pack, parent, false);
         return new CoinPackViewHolder(view);
     }
 
-    @Override
     public void onBindViewHolder(CoinPackViewHolder holder, int position) {
         holder.bind(packs.get(position), listener);
     }
 
-    @Override
     public int getItemCount() {
         return packs.size();
     }
@@ -88,7 +85,6 @@ public class CoinPackAdapter extends RecyclerView.Adapter<CoinPackAdapter.CoinPa
             }
 
             btnBuy.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
                     listener.onCoinPackSelected(pack);
                 }

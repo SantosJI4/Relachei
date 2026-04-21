@@ -34,13 +34,11 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     private List<Episode>   episodes;
     private ServerRepository serverRepository;
 
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -61,7 +59,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         loadTmdbFeed();
     }
 
-    @Override
     public void onResume() {
         super.onResume();
         updateCoinDisplay();
@@ -79,11 +76,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
      */
     private void loadTmdbFeed() {
         serverRepository.loadFeed(40, new ServerRepository.FeedCallback() {
-            @Override
             public void onSuccess(final List<Episode> loaded, boolean fromServer) {
                 if (getActivity() == null || loaded.isEmpty()) return;
                 getActivity().runOnUiThread(new Runnable() {
-                    @Override
                     public void run() {
                         episodes.clear();
                         episodes.addAll(loaded);
@@ -92,7 +87,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
                 });
             }
 
-            @Override
             public void onError(String message) {
                 // Feed mock já está sendo exibido — silencioso
             }
@@ -101,7 +95,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
 
     // ===================== FeedAdapter.OnEpisodeActionListener =====================
 
-    @Override
     public void onPlayEpisode(Episode episode) {
         if (prefs.isVipActive() || episode.isFree()) {
             openPlayer(episode);
@@ -117,13 +110,11 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         }
     }
 
-    @Override
     public void onLikeEpisode(Episode episode, boolean liked) {
         episode.setLiked(liked);
         episode.setLikeCount(episode.getLikeCount() + (liked ? 1 : -1));
     }
 
-    @Override
     public void onShareEpisode(Episode episode) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
@@ -158,7 +149,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
         btnAd.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 showAdRewardDialog();
@@ -166,7 +156,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         });
 
         btnCoins.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 Toast.makeText(getActivity(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
@@ -174,7 +163,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         });
 
         btnVip.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 if (getActivity() instanceof MainActivity) {
@@ -184,7 +172,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
@@ -209,7 +196,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         Button btnCancel  = (Button) dialog.findViewById(R.id.btn_ad_cancel);
 
         btnShortAd.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 simulateAdReward(1, "Anúncio rápido assistido! +1 moeda 🪙");
@@ -217,7 +203,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         });
 
         btnLongAd.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 simulateAdReward(3, "Anúncio completo assistido! +3 moedas 🪙");
@@ -225,7 +210,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }

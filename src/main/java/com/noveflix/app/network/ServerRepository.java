@@ -78,7 +78,6 @@ public class ServerRepository {
      */
     public void loadFeed(int perPage, final FeedCallback callback) {
         api.getFeed(1, perPage).enqueue(new Callback<FeedResponse>() {
-            @Override
             public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
                 if (response.isSuccessful()
                         && response.body() != null
@@ -91,7 +90,6 @@ public class ServerRepository {
                 }
             }
 
-            @Override
             public void onFailure(Call<FeedResponse> call, Throwable t) {
                 // Servidor offline → TMDB
                 fallbackToTmdb(callback);

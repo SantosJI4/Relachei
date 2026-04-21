@@ -28,19 +28,16 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
         this.listener = listener;
     }
 
-    @Override
     public VipPlanViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_vip_plan, parent, false);
         return new VipPlanViewHolder(view);
     }
 
-    @Override
     public void onBindViewHolder(VipPlanViewHolder holder, int position) {
         holder.bind(plans.get(position), listener);
     }
 
-    @Override
     public int getItemCount() {
         return plans.size();
     }
@@ -111,7 +108,6 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
             }
 
             btnSubscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
                     listener.onPlanSelected(plan);
                 }

@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private final VipFragment     vipFragment     = new VipFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.nav_home) {

@@ -33,13 +33,11 @@ public class VipFragment extends Fragment {
     private View     layoutVipActive;
     private View     layoutVipBenefits;
 
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_vip, container, false);
     }
 
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -56,7 +54,6 @@ public class VipFragment extends Fragment {
         RecyclerView rvPlans = view.findViewById(R.id.rv_vip_plans);
         List<VipPlan> plans  = MockDataProvider.getVipPlans();
         VipPlanAdapter planAdapter = new VipPlanAdapter(plans, new VipPlanAdapter.OnPlanSelectedListener() {
-            @Override
             public void onPlanSelected(VipPlan plan) {
                 onPlanSelectedInternal(plan);
             }
@@ -69,7 +66,6 @@ public class VipFragment extends Fragment {
         RecyclerView rvCoins = view.findViewById(R.id.rv_coin_packs);
         List<CoinPack> packs = MockDataProvider.getCoinPacks();
         CoinPackAdapter coinAdapter = new CoinPackAdapter(packs, new CoinPackAdapter.OnCoinPackSelectedListener() {
-            @Override
             public void onCoinPackSelected(CoinPack pack) {
                 onCoinPackSelectedInternal(pack);
             }
@@ -81,7 +77,6 @@ public class VipFragment extends Fragment {
         updateVipStatus();
     }
 
-    @Override
     public void onResume() {
         super.onResume();
         updateVipStatus();

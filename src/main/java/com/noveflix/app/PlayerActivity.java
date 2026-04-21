@@ -19,7 +19,6 @@ public class PlayerActivity extends AppCompatActivity {
 
     private VideoView videoView;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -42,7 +41,6 @@ public class PlayerActivity extends AppCompatActivity {
         tvNovela.setText(novelaTitle);
         tvEpisode.setText("Ep. " + epNum + " — " + epTitle);
         btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 finish();
             }
@@ -59,7 +57,6 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    @Override
     protected void onPause() {
         super.onPause();
         if (videoView != null && videoView.isPlaying()) {
@@ -67,7 +64,6 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (videoView != null) {
@@ -87,7 +83,6 @@ public class PlayerActivity extends AppCompatActivity {
     private ExoPlayer player;
     private StyledPlayerView playerView;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -111,7 +106,6 @@ public class PlayerActivity extends AppCompatActivity {
         tvNovela.setText(novelaTitle);
         tvEpisode.setText("Ep. " + epNum + " — " + epTitle);
         btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 finish();
             }
@@ -129,13 +123,11 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    @Override
     protected void onPause() {
         super.onPause();
         if (player != null) player.pause();
     }
 
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (player != null) {

@@ -18,13 +18,11 @@ public class ProfileFragment extends Fragment {
 
     private PrefsManager prefs;
 
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -42,7 +40,6 @@ public class ProfileFragment extends Fragment {
         updateStats(tvCoins, tvEpisodes, tvSaved, tvVipBadge);
 
         btnVip.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).navigateToVip();
@@ -51,28 +48,24 @@ public class ProfileFragment extends Fragment {
         });
 
         btnCoins.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Em breve: histórico!", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Em breve: configurações!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    @Override
     public void onResume() {
         super.onResume();
         View view = getView();
