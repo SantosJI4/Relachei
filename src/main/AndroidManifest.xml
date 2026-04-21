@@ -35,5 +35,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoveFlix.Player" />
 
+        <activity
+            android:name=".AdWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoveFlix.Player" />
+
     </application>
 </manifest>

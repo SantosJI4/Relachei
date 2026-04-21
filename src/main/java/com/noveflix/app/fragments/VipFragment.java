@@ -1,6 +1,8 @@
 package com.noveflix.app.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.noveflix.app.AdWebViewActivity;
 import com.noveflix.app.R;
 import com.noveflix.app.data.MockDataProvider;
 import com.noveflix.app.models.CoinPack;
@@ -22,6 +25,11 @@ import java.util.List;
 import java.util.Locale;
 
 public class VipFragment extends Fragment {
+
+    private static final String AD_COINS_URL = "https://relaxeinov.squareweb.app/ad/coins";
+    private static final int    REWARD_SHORT  = 1;
+    private static final int    REWARD_LONG   = 3;
+    private int                 pendingReward  = 0;
 
     private PrefsManager prefs;
     private TextView     tvVipStatus;
@@ -48,6 +56,51 @@ public class VipFragment extends Fragment {
         inflatePlans(view);
         inflateCoinPacks(view);
         updateVipStatus();
+        wireAdButtons(view);
+    }
+
+    private void wireAdButtons(View root) {
+        Button btnShort = (Button) root.findViewById(R.id.btn_ad_short);
+        Button btnLong  = (Button) root.findViewById(R.id.btn_ad_long);
+
+        if (btnShort != null) {
+            btnShort.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    pendingReward = REWARD_SHORT;
+                    openAdPage();
+                }
+            });
+        }
+        if (btnLong != null) {
+            btnLong.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    pendingReward = REWARD_LONG;
+                    openAdPage();
+                }
+            });
+        }
+    }
+
+    private void openAdPage() {
+        Intent intent = new Intent(getActivity(), AdWebViewActivity.class);
+        intent.putExtra(AdWebViewActivity.EXTRA_AD_URL, AD_COINS_URL);
+        intent.putExtra(AdWebViewActivity.EXTRA_AD_TYPE, "coins");
+        startActivityForResult(intent, AdWebViewActivity.REQUEST_AD_COINS);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AdWebViewActivity.REQUEST_AD_COINS
+                && resultCode == Activity.RESULT_OK
+                && pendingReward > 0) {
+            int reward = pendingReward;
+            pendingReward = 0;
+            prefs.addCoins(reward);
+            updateVipStatus();
+            Toast.makeText(getActivity(),
+                    "+" + reward + " moedas adicionadas! \uD83E\uDE99",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void inflatePlans(View root) {

@@ -225,61 +225,84 @@ def upsert_novela(conn, title: str, country_code: str, description: str = "", po
 
 # ── Página de anúncio (Adsterra) ──────────────────────────────────────────────
 ADSTERRA_SCRIPT = """
-<!-- Cole aqui o código do anúncio gerado pelo Adsterra -->
+<script src="https://pl29215889.profitablecpmratenetwork.com/7d/d5/1f/7dd51f524bbc01c54a2c4dc63625355f.js"></script>
+
+<script>
+  atOptions = {
+    'key' : 'a8dff9e382fbc937d6a870b5642d8df7',
+    'format' : 'iframe',
+    'height' : 300,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/a8dff9e382fbc937d6a870b5642d8df7/invoke.js"></script>
+
 """
 
-@app.get("/ad", response_class=HTMLResponse)
-async def ad_page():
-    html = f"""<!DOCTYPE html>
+def _ad_html(title: str, subtitle: str, countdown: int, callback_scheme: str) -> str:
+    return f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>NoveFlix</title>
     <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{
-            background: #0A0A0A;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            font-family: sans-serif;
-            color: #fff;
-        }}
-        .container {{
-            text-align: center;
-            padding: 24px;
-            max-width: 480px;
-            width: 100%;
-        }}
-        .logo {{
-            font-size: 28px;
-            font-weight: bold;
-            color: #E50914;
-            margin-bottom: 8px;
-        }}
-        .subtitle {{
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 24px;
-        }}
-        .ad-area {{
-            min-height: 100px;
-        }}
+        *{{margin:0;padding:0;box-sizing:border-box;}}
+        body{{background:#0A0A0A;display:flex;align-items:center;justify-content:center;
+             min-height:100vh;font-family:sans-serif;color:#fff;flex-direction:column;}}
+        .logo{{font-size:26px;font-weight:bold;color:#E50914;margin-bottom:6px;}}
+        .subtitle{{font-size:13px;color:#888;margin-bottom:20px;}}
+        .ad-area{{width:100%;max-width:480px;padding:0 16px;min-height:100px;}}
+        .btn{{display:none;margin-top:20px;background:#E50914;color:#fff;border:none;
+              border-radius:8px;padding:14px 40px;font-size:16px;font-weight:bold;cursor:pointer;}}
+        .countdown{{margin-top:16px;font-size:13px;color:#888;}}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">NoveFlix</div>
-        <div class="subtitle">Aguarde um momento...</div>
-        <div class="ad-area">
-            {ADSTERRA_SCRIPT}
-        </div>
-    </div>
+    <div class="logo">NoveFlix</div>
+    <div class="subtitle">{subtitle}</div>
+    <div class="ad-area">{ADSTERRA_SCRIPT}</div>
+    <div class="countdown" id="cd">Aguarde <span id="sec">{countdown}</span>s...</div>
+    <button class="btn" id="btn" onclick="done()">{title}</button>
+    <script>
+        var t={countdown};
+        var iv=setInterval(function(){{
+            t--;
+            document.getElementById('sec').textContent=t;
+            if(t<=0){{
+                clearInterval(iv);
+                document.getElementById('cd').style.display='none';
+                document.getElementById('btn').style.display='inline-block';
+            }}
+        }},1000);
+        function done(){{
+            try{{ window.location.href='{callback_scheme}'; }}catch(e){{}}
+            try{{ Android.onAdComplete(); }}catch(e){{}}
+        }}
+    </script>
 </body>
 </html>"""
-    return HTMLResponse(content=html)
+
+
+@app.get("/ad", response_class=HTMLResponse)
+async def ad_page():
+    return HTMLResponse(content=_ad_html(
+        title="Continuar assistindo",
+        subtitle="Aguarde o anúncio para continuar...",
+        countdown=5,
+        callback_scheme="noveflix://ad_complete"
+    ))
+
+
+@app.get("/ad/coins", response_class=HTMLResponse)
+async def ad_coins_page():
+    return HTMLResponse(content=_ad_html(
+        title="Resgatar +3 moedas",
+        subtitle="Assista o anúncio e ganhe moedas!",
+        countdown=10,
+        callback_scheme="noveflix://coins_earned"
+    ))
 
 
 # ── API pública ────────────────────────────────────────────────────────────────

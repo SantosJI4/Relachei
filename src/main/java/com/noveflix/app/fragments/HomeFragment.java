@@ -1,7 +1,9 @@
 package com.noveflix.app.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.noveflix.app.AdWebViewActivity;
 import com.noveflix.app.MainActivity;
 import com.noveflix.app.R;
 import com.noveflix.app.adapters.FeedAdapter;
@@ -25,6 +28,12 @@ import com.noveflix.app.utils.PrefsManager;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClickListener {
+
+    private static final String AD_URL = "https://relaxeinov.squareweb.app/ad";
+    private static final int    AD_EVERY_N_EPISODES = 2;
+
+    private int              episodesSinceLastAd = 0;
+    private Episode          pendingEpisode      = null;
 
     private ListView         feedListView;
     private FeedAdapter      adapter;
@@ -237,6 +246,17 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             updateCoinDisplay();
         }
 
+        episodesSinceLastAd++;
+        if (episodesSinceLastAd >= AD_EVERY_N_EPISODES) {
+            episodesSinceLastAd = 0;
+            pendingEpisode = episode;
+            Intent intent = new Intent(getActivity(), AdWebViewActivity.class);
+            intent.putExtra(AdWebViewActivity.EXTRA_AD_URL, AD_URL);
+            intent.putExtra(AdWebViewActivity.EXTRA_AD_TYPE, "episode");
+            startActivityForResult(intent, AdWebViewActivity.REQUEST_AD_EPISODE);
+            return;
+        }
+
         if (vv.isPlaying()) {
             vv.pause();
             // Mostra container play quando pausado
@@ -245,6 +265,18 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             vv.start();
             // Esconde container quando tocando
             if (playContainer != null) playContainer.setVisibility(View.GONE);
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AdWebViewActivity.REQUEST_AD_EPISODE) {
+            // Após o anúncio, continua a reprodução normalmente
+            if (pendingEpisode != null) {
+                Episode ep = pendingEpisode;
+                pendingEpisode = null;
+                onEpisodeClick(ep);
+            }
         }
     }
 
