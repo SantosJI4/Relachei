@@ -20,6 +20,10 @@ android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
     
+    aaptOptions {
+        noCompress 'webp'
+    }
+    
     defaultConfig {
         applicationId "com.noveflix.app"
         minSdkVersion 21
