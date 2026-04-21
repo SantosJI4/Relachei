@@ -8,17 +8,20 @@ import android.widget.LinearLayout;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.noveflix.app.fragments.CatalogFragment;
 import com.noveflix.app.fragments.HomeFragment;
 import com.noveflix.app.fragments.ProfileFragment;
 import com.noveflix.app.fragments.VipFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Fragment      activeFragment;
+    private Fragment         activeFragment;
+    private CatalogFragment catalogFragment = new CatalogFragment();
     private HomeFragment    homeFragment    = new HomeFragment();
     private VipFragment     vipFragment     = new VipFragment();
     private ProfileFragment profileFragment = new ProfileFragment();
 
+    private LinearLayout btnTabCatalog;
     private LinearLayout btnTabHome;
     private LinearLayout btnTabVip;
     private LinearLayout btnTabProfile;
@@ -31,18 +34,26 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        btnTabCatalog = (LinearLayout) findViewById(R.id.btn_tab_catalog);
         btnTabHome    = (LinearLayout) findViewById(R.id.btn_tab_home);
         btnTabVip     = (LinearLayout) findViewById(R.id.btn_tab_vip);
         btnTabProfile = (LinearLayout) findViewById(R.id.btn_tab_profile);
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, homeFragment, "home")
+                    .add(R.id.fragment_container, catalogFragment, "catalog")
+                    .add(R.id.fragment_container, homeFragment, "home").hide(homeFragment)
                     .add(R.id.fragment_container, vipFragment, "vip").hide(vipFragment)
                     .add(R.id.fragment_container, profileFragment, "profile").hide(profileFragment)
                     .commit();
-            activeFragment = homeFragment;
+            activeFragment = catalogFragment;
         }
+
+        btnTabCatalog.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showFragment(catalogFragment);
+            }
+        });
 
         btnTabHome.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

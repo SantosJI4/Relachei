@@ -2,11 +2,14 @@ package com.noveflix.app.data;
 
 import com.noveflix.app.models.CoinPack;
 import com.noveflix.app.models.Episode;
+import com.noveflix.app.models.Novela;
 import com.noveflix.app.models.VipPlan;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Fornece dados mock para o feed. Substitua pelas chamadas de API real.
@@ -110,6 +113,27 @@ public class MockDataProvider {
                 "🇨🇳", "CN"));
 
         return list;
+    }
+
+    public static List<Novela> getNovelas() {
+        List<Episode> allEpisodes = getFeedEpisodes();
+        Map<String, Novela> novelaMap = new LinkedHashMap<>();
+        for (Episode ep : allEpisodes) {
+            String novelaId = ep.getNovelaId();
+            if (!novelaMap.containsKey(novelaId)) {
+                novelaMap.put(novelaId, new Novela(
+                        novelaId,
+                        ep.getNovelaTitle(),
+                        ep.getDescription(),
+                        ep.getThumbnailUrl(),
+                        ep.getCountryFlag(),
+                        ep.getCountryCode(),
+                        new ArrayList<Episode>()
+                ));
+            }
+            novelaMap.get(novelaId).getEpisodes().add(ep);
+        }
+        return new ArrayList<>(novelaMap.values());
     }
 
     public static List<VipPlan> getVipPlans() {
