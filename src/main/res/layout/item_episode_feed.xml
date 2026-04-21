@@ -6,7 +6,7 @@
     android:background="@android:color/black">
 
     <!-- === VIDEO VIEW (tela cheia, toca inline) === -->
-    <VideoView
+    <com.noveflix.app.utils.FullscreenVideoView
         android:id="@+id/vv_episode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

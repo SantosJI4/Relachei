@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -32,6 +33,8 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
     private List<Episode>    episodes;
     private ServerRepository serverRepository;
     private int              currentPlayingPosition = -1;
+    // Cache: posição salva ao sair, restaurada ao voltar
+    private int              lastKnownPosition      = 0;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,20 +48,23 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         tvCoinBalance = (TextView) view.findViewById(R.id.tv_coin_balance_home);
         feedListView  = (ListView) view.findViewById(R.id.feed_list_view);
 
+        // Rolagem mais suave: desabilita over-scroll e fling excessivo
+        feedListView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        feedListView.setFriction(0.09f);
+
         serverRepository = new ServerRepository();
         episodes = MockDataProvider.getFeedEpisodes();
         adapter  = new FeedAdapter(getActivity(), episodes, this);
         feedListView.setAdapter(adapter);
 
-        // === TIKTOK SCROLL LISTENER ===
+        // === TIKTOK SCROLL LISTENER: snap + auto-play ao parar ===
         feedListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onScrollStateChanged(AbsListView v, int scrollState) {
                 if (scrollState == SCROLL_STATE_IDLE) {
-                    playMostVisible();
+                    snapAndPlay();
                 }
             }
-            public void onScroll(AbsListView view, int firstVisible,
-                                 int visibleCount, int totalCount) {}
+            public void onScroll(AbsListView v, int first, int count, int total) {}
         });
 
         updateCoinDisplay();
@@ -68,14 +74,25 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
     public void onResume() {
         super.onResume();
         updateCoinDisplay();
-        // Auto-play ao voltar
         feedListView.post(new Runnable() {
-            public void run() { playMostVisible(); }
+            public void run() {
+                if (lastKnownPosition > 0 && lastKnownPosition < episodes.size()) {
+                    // Restaura posição anterior (cache)
+                    feedListView.smoothScrollToPositionFromTop(lastKnownPosition, 0, 1);
+                    feedListView.post(new Runnable() {
+                        public void run() { playAt(lastKnownPosition); }
+                    });
+                } else {
+                    snapAndPlay();
+                }
+            }
         });
     }
 
     public void onPause() {
         super.onPause();
+        // Salva posição antes de parar (cache)
+        if (currentPlayingPosition >= 0) lastKnownPosition = currentPlayingPosition;
         stopAllVideos();
     }
 
@@ -85,8 +102,8 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         }
     }
 
-    // Encontra o item mais centralizado na tela e auto-play
-    private void playMostVisible() {
+    // Snapa para o item mais visível e toca (rolagem suave estilo TikTok)
+    private void snapAndPlay() {
         if (feedListView == null) return;
         int first  = feedListView.getFirstVisiblePosition();
         int last   = feedListView.getLastVisiblePosition();
@@ -104,34 +121,37 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
                 bestPos  = i;
             }
         }
+        // Snap suave: move item para topo em 250ms
+        feedListView.smoothScrollToPositionFromTop(bestPos, 0, 250);
         playAt(bestPos);
     }
 
-    private void playAt(int position) {
+    private void playAt(final int position) {
         if (position == currentPlayingPosition) return;
 
-        // Para todos os vídeos visíveis
         stopAllVideos();
 
-        // Toca o item na posição alvo
         int childIndex = position - feedListView.getFirstVisiblePosition();
         View target = feedListView.getChildAt(childIndex);
         if (target == null) return;
 
-        VideoView vv = (VideoView) target.findViewById(R.id.vv_episode);
+        final VideoView  vv      = (VideoView)  target.findViewById(R.id.vv_episode);
+        final ImageView  playBtn = (ImageView)  target.findViewById(R.id.iv_play_btn);
         if (vv == null) return;
 
         if (position < episodes.size()) {
-            Episode ep = episodes.get(position);
-            String url = ep.getVideoUrl();
+            Episode ep  = episodes.get(position);
+            String  url = ep.getVideoUrl();
             if (url != null && !url.isEmpty()) {
                 currentPlayingPosition = position;
                 vv.setVideoURI(Uri.parse(url));
                 vv.start();
-                // Looping
+                // Botão sempre visível: mostra pause enquanto toca
+                if (playBtn != null) playBtn.setImageResource(R.drawable.ic_pause);
                 vv.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
                     public void onCompletion(android.media.MediaPlayer mp) {
                         mp.start(); // loop
+                        if (playBtn != null) playBtn.setImageResource(R.drawable.ic_pause);
                     }
                 });
             }
@@ -144,9 +164,10 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             View child = feedListView.getChildAt(i);
             if (child == null) continue;
             VideoView vv = (VideoView) child.findViewById(R.id.vv_episode);
-            if (vv != null && vv.isPlaying()) {
-                vv.pause();
-            }
+            if (vv != null && vv.isPlaying()) vv.pause();
+            // Reseta ícone para play
+            ImageView playBtn = (ImageView) child.findViewById(R.id.iv_play_btn);
+            if (playBtn != null) playBtn.setImageResource(R.drawable.ic_play);
         }
         currentPlayingPosition = -1;
     }
@@ -161,7 +182,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
                         episodes.addAll(loaded);
                         adapter.notifyDataSetChanged();
                         currentPlayingPosition = -1;
-                        // Auto-play primeiro item após carregar
                         feedListView.post(new Runnable() {
                             public void run() { playAt(0); }
                         });
@@ -169,7 +189,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
                 });
             }
             public void onError(String message) {
-                // feed mock já exibido
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
@@ -183,7 +202,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         });
     }
 
-    // FeedAdapter.OnEpisodeClickListener - toque pausa/retoma
+    // Toque: toggle pause/play com ícone atualizado
     public void onEpisodeClick(Episode episode) {
         int position = episodes.indexOf(episode);
         if (position < 0) return;
@@ -192,7 +211,8 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         View child = feedListView.getChildAt(childIndex);
         if (child == null) return;
 
-        VideoView vv = (VideoView) child.findViewById(R.id.vv_episode);
+        VideoView vv      = (VideoView) child.findViewById(R.id.vv_episode);
+        ImageView playBtn = (ImageView) child.findViewById(R.id.iv_play_btn);
         if (vv == null) return;
 
         if (!prefs.isVipActive() && !episode.isFree()) {
@@ -204,11 +224,12 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             updateCoinDisplay();
         }
 
-        // Toggle pause/play ao tocar
         if (vv.isPlaying()) {
             vv.pause();
+            if (playBtn != null) playBtn.setImageResource(R.drawable.ic_play);
         } else {
             vv.start();
+            if (playBtn != null) playBtn.setImageResource(R.drawable.ic_pause);
         }
     }
 
