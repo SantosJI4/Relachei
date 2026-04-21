@@ -146,12 +146,12 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
                 currentPlayingPosition = position;
                 vv.setVideoURI(Uri.parse(url));
                 vv.start();
-                // Botão sempre visível: mostra pause enquanto toca
-                if (playBtn != null) playBtn.setImageResource(R.drawable.ic_pause);
+                // Esconde botão enquanto toca
+                if (playBtn != null) playBtn.setVisibility(View.GONE);
                 vv.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
                     public void onCompletion(android.media.MediaPlayer mp) {
                         mp.start(); // loop
-                        if (playBtn != null) playBtn.setImageResource(R.drawable.ic_pause);
+                        if (playBtn != null) playBtn.setVisibility(View.GONE);
                     }
                 });
             }
@@ -165,9 +165,11 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             if (child == null) continue;
             VideoView vv = (VideoView) child.findViewById(R.id.vv_episode);
             if (vv != null && vv.isPlaying()) vv.pause();
-            // Reseta ícone para play
             ImageView playBtn = (ImageView) child.findViewById(R.id.iv_play_btn);
-            if (playBtn != null) playBtn.setImageResource(R.drawable.ic_play);
+            if (playBtn != null) {
+                playBtn.setImageResource(R.drawable.ic_play);
+                playBtn.setVisibility(View.VISIBLE);
+            }
         }
         currentPlayingPosition = -1;
     }
@@ -226,10 +228,15 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
 
         if (vv.isPlaying()) {
             vv.pause();
-            if (playBtn != null) playBtn.setImageResource(R.drawable.ic_play);
+            // Mostra botão play quando pausado
+            if (playBtn != null) {
+                playBtn.setImageResource(R.drawable.ic_play);
+                playBtn.setVisibility(View.VISIBLE);
+            }
         } else {
             vv.start();
-            if (playBtn != null) playBtn.setImageResource(R.drawable.ic_pause);
+            // Esconde botão quando tocando
+            if (playBtn != null) playBtn.setVisibility(View.GONE);
         }
     }
 
