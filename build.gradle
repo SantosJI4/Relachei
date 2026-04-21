@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:5.1.1'
     }
 }
 
@@ -25,6 +25,11 @@ repositories {
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
+    
+    // Desabilitar AAPT2 daemon que está falhando
+    aaptOptions {
+        noCompress 'webp'
+    }
     
     defaultConfig {
         applicationId "com.noveflix.app"
