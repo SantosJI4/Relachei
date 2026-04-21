@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import android.support.v7.app.AppCompatActivity;
 
-import com.noveflix.app.R;
 import com.noveflix.app.fragments.HomeFragment;
 import com.noveflix.app.fragments.ProfileFragment;
 import com.noveflix.app.fragments.VipFragment;

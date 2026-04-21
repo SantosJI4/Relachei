@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.noveflix.app.R;import com.noveflix.app.R;
+import com.noveflix.app.R;
 import com.noveflix.app.models.VipPlan;
 
 import java.util.List;
