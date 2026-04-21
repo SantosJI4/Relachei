@@ -21,6 +21,7 @@ import com.noveflix.app.R;
 import com.noveflix.app.adapters.FeedAdapter;
 import com.noveflix.app.data.MockDataProvider;
 import com.noveflix.app.models.Episode;
+import com.noveflix.app.network.ServerRepository;
 import com.noveflix.app.utils.PrefsManager;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     private TextView        tvCoinBalance;
     private PrefsManager    prefs;
     private List<Episode>   episodes;
+    private ServerRepository serverRepository;
 
     @Nullable
     @Override
@@ -44,10 +46,12 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs        = PrefsManager.getInstance(requireContext());
-        tvCoinBalance = view.findViewById(R.id.tv_coin_balance_home);
-        viewPager    = view.findViewById(R.id.feed_view_pager);
+        prefs            = PrefsManager.getInstance(requireContext());
+        tvCoinBalance    = view.findViewById(R.id.tv_coin_balance_home);
+        viewPager        = view.findViewById(R.id.feed_view_pager);
+        serverRepository = new ServerRepository();
 
+        // Carrega dados mock enquanto busca dados reais
         episodes = MockDataProvider.getFeedEpisodes();
         adapter  = new FeedAdapter(episodes, this);
 
@@ -56,6 +60,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         viewPager.setOffscreenPageLimit(2);
 
         updateCoinDisplay();
+        loadTmdbFeed();
     }
 
     @Override
@@ -68,6 +73,29 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         if (tvCoinBalance != null) {
             tvCoinBalance.setText("🪙 " + prefs.getCoins());
         }
+    }
+
+    /**
+     * Busca episódios do servidor NoveFlix (fallback automático para TMDB).
+     * Mostra dados mock enquanto carrega.
+     */
+    private void loadTmdbFeed() {
+        serverRepository.loadFeed(40, new ServerRepository.FeedCallback() {
+            @Override
+            public void onSuccess(List<Episode> loaded, boolean fromServer) {
+                if (getActivity() == null || loaded.isEmpty()) return;
+                getActivity().runOnUiThread(() -> {
+                    episodes.clear();
+                    episodes.addAll(loaded);
+                    adapter.notifyDataSetChanged();
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                // Feed mock já está sendo exibido — silencioso
+            }
+        });
     }
 
     // ===================== FeedAdapter.OnEpisodeActionListener =====================
