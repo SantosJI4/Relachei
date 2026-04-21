@@ -1,8 +1,6 @@
 package com.noveflix.app.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.noveflix.app.AdWebViewActivity;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
 import com.noveflix.app.R;
 import com.noveflix.app.data.MockDataProvider;
 import com.noveflix.app.models.CoinPack;
@@ -26,10 +30,11 @@ import java.util.Locale;
 
 public class VipFragment extends Fragment {
 
-    private static final String AD_COINS_URL = "https://relaxeinov.squareweb.app/ad/coins";
+    private static final String INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-7049530106653071/8124737911";
     private static final int    REWARD_SHORT  = 1;
     private static final int    REWARD_LONG   = 3;
-    private int                 pendingReward  = 0;
+
+    private InterstitialAd mInterstitialAd = null;
 
     private PrefsManager prefs;
     private TextView     tvVipStatus;
@@ -57,6 +62,21 @@ public class VipFragment extends Fragment {
         inflateCoinPacks(view);
         updateVipStatus();
         wireAdButtons(view);
+        preloadInterstitial();
+    }
+
+    private void preloadInterstitial() {
+        if (getActivity() == null) return;
+        InterstitialAd.load(getActivity(), INTERSTITIAL_AD_UNIT_ID,
+                new AdRequest.Builder().build(),
+                new InterstitialAdLoadCallback() {
+                    public void onAdLoaded(InterstitialAd ad) {
+                        mInterstitialAd = ad;
+                    }
+                    public void onAdFailedToLoad(LoadAdError error) {
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     private void wireAdButtons(View root) {
@@ -66,42 +86,46 @@ public class VipFragment extends Fragment {
         if (btnShort != null) {
             btnShort.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    pendingReward = REWARD_SHORT;
-                    openAdPage();
+                    showInterstitialForCoins(REWARD_SHORT);
                 }
             });
         }
         if (btnLong != null) {
             btnLong.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    pendingReward = REWARD_LONG;
-                    openAdPage();
+                    showInterstitialForCoins(REWARD_LONG);
                 }
             });
         }
     }
 
-    private void openAdPage() {
-        Intent intent = new Intent(getActivity(), AdWebViewActivity.class);
-        intent.putExtra(AdWebViewActivity.EXTRA_AD_URL, AD_COINS_URL);
-        intent.putExtra(AdWebViewActivity.EXTRA_AD_TYPE, "coins");
-        startActivityForResult(intent, AdWebViewActivity.REQUEST_AD_COINS);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AdWebViewActivity.REQUEST_AD_COINS
-                && resultCode == Activity.RESULT_OK
-                && pendingReward > 0) {
-            int reward = pendingReward;
-            pendingReward = 0;
-            prefs.addCoins(reward);
-            updateVipStatus();
+    private void showInterstitialForCoins(final int reward) {
+        if (mInterstitialAd != null && getActivity() != null) {
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                public void onAdDismissedFullScreenContent() {
+                    mInterstitialAd = null;
+                    preloadInterstitial();
+                    prefs.addCoins(reward);
+                    updateVipStatus();
+                    Toast.makeText(getActivity(),
+                            "+" + reward + " moedas adicionadas! \uD83E\uDE99",
+                            Toast.LENGTH_SHORT).show();
+                }
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    mInterstitialAd = null;
+                    preloadInterstitial();
+                }
+            });
+            mInterstitialAd.show(getActivity());
+        } else {
             Toast.makeText(getActivity(),
-                    "+" + reward + " moedas adicionadas! \uD83E\uDE99",
+                    "Anúncio não disponível, tente novamente em instantes.",
                     Toast.LENGTH_SHORT).show();
+            preloadInterstitial();
         }
     }
+
+    private void openAdPage() {} // mantido para compatibilidade
 
     private void inflatePlans(View root) {
         LinearLayout container = (LinearLayout) root.findViewById(R.id.ll_vip_plans);

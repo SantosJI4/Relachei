@@ -3,7 +3,6 @@ package com.noveflix.app.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +15,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.noveflix.app.AdWebViewActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
 import com.noveflix.app.MainActivity;
 import com.noveflix.app.R;
 import com.noveflix.app.adapters.FeedAdapter;
@@ -29,11 +35,14 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClickListener {
 
-    private static final String AD_URL = "https://relaxeinov.squareweb.app/ad";
-    private static final int    AD_EVERY_N_EPISODES = 2;
+    private static final String INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-7049530106653071/8124737911";
+    private static final String BANNER_AD_UNIT_ID       = "ca-app-pub-7049530106653071/3164267304";
+    private static final int    AD_EVERY_N_EPISODES     = 2;
 
     private int              episodesSinceLastAd = 0;
     private Episode          pendingEpisode      = null;
+    private InterstitialAd   mInterstitialAd     = null;
+    private AdView           adView              = null;
 
     private ListView         feedListView;
     private FeedAdapter      adapter;
@@ -78,10 +87,20 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
 
         updateCoinDisplay();
         loadFeed();
+
+        // Banner AdMob
+        adView = (AdView) view.findViewById(R.id.adView);
+        if (adView != null) {
+            adView.loadAd(new AdRequest.Builder().build());
+        }
+
+        // Pré-carrega intersticial
+        preloadInterstitial();
     }
 
     public void onResume() {
         super.onResume();
+        if (adView != null) adView.resume();
         updateCoinDisplay();
         feedListView.post(new Runnable() {
             public void run() {
@@ -100,9 +119,29 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
 
     public void onPause() {
         super.onPause();
+        if (adView != null) adView.pause();
         // Salva posição antes de parar (cache)
         if (currentPlayingPosition >= 0) lastKnownPosition = currentPlayingPosition;
         stopAllVideos();
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (adView != null) adView.destroy();
+    }
+
+    private void preloadInterstitial() {
+        if (getActivity() == null) return;
+        InterstitialAd.load(getActivity(), INTERSTITIAL_AD_UNIT_ID,
+                new AdRequest.Builder().build(),
+                new InterstitialAdLoadCallback() {
+                    public void onAdLoaded(InterstitialAd ad) {
+                        mInterstitialAd = ad;
+                    }
+                    public void onAdFailedToLoad(LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     private void updateCoinDisplay() {
@@ -250,10 +289,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         if (episodesSinceLastAd >= AD_EVERY_N_EPISODES) {
             episodesSinceLastAd = 0;
             pendingEpisode = episode;
-            Intent intent = new Intent(getActivity(), AdWebViewActivity.class);
-            intent.putExtra(AdWebViewActivity.EXTRA_AD_URL, AD_URL);
-            intent.putExtra(AdWebViewActivity.EXTRA_AD_TYPE, "episode");
-            startActivityForResult(intent, AdWebViewActivity.REQUEST_AD_EPISODE);
+            showInterstitialForEpisode(episode);
             return;
         }
 
@@ -268,16 +304,46 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AdWebViewActivity.REQUEST_AD_EPISODE) {
-            // Após o anúncio, continua a reprodução normalmente
-            if (pendingEpisode != null) {
-                Episode ep = pendingEpisode;
-                pendingEpisode = null;
-                onEpisodeClick(ep);
-            }
+    private void showInterstitialForEpisode(final Episode episode) {
+        if (mInterstitialAd != null && getActivity() != null) {
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                public void onAdDismissedFullScreenContent() {
+                    mInterstitialAd = null;
+                    preloadInterstitial();
+                    resumeEpisodePlayback(episode);
+                }
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    mInterstitialAd = null;
+                    preloadInterstitial();
+                    resumeEpisodePlayback(episode);
+                }
+            });
+            mInterstitialAd.show(getActivity());
+        } else {
+            resumeEpisodePlayback(episode);
         }
+    }
+
+    private void resumeEpisodePlayback(Episode episode) {
+        int position = episodes.indexOf(episode);
+        if (position < 0) return;
+        int childIndex = position - feedListView.getFirstVisiblePosition();
+        View child = feedListView.getChildAt(childIndex);
+        if (child == null) return;
+        VideoView vv = (VideoView) child.findViewById(R.id.vv_episode);
+        View playContainer = child.findViewById(R.id.fl_play_container);
+        if (vv == null) return;
+        if (vv.isPlaying()) {
+            vv.pause();
+            if (playContainer != null) playContainer.setVisibility(View.VISIBLE);
+        } else {
+            vv.start();
+            if (playContainer != null) playContainer.setVisibility(View.GONE);
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void showNoCoinsDialog() {
