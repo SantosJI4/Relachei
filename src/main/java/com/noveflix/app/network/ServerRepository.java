@@ -2,6 +2,7 @@ package com.noveflix.app.network;
 
 import com.noveflix.app.data.MockDataProvider;
 import com.noveflix.app.models.Episode;
+import com.noveflix.app.models.Novela;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,30 @@ public class ServerRepository {
         void onError(String message);
     }
 
+    public interface NovelasCallback {
+        void onSuccess(List<Novela> novelas);
+        void onError(String message);
+    }
+
+    public interface EpisodesCallback {
+        void onSuccess(List<Episode> episodes);
+        void onError(String message);
+    }
+
     // ── Interface Retrofit do servidor ──────────────────────
     interface NoveFlixApi {
         @GET("api/feed")
         Call<FeedResponse> getFeed(
                 @Query("page")     int page,
                 @Query("per_page") int perPage
+        );
+
+        @GET("api/novelas")
+        Call<List<NovelaDto>> getNovelas();
+
+        @GET("api/novelas/{novela_id}/episodes")
+        Call<List<EpisodeDto>> getNovelaEpisodes(
+                @retrofit2.http.Path("novela_id") String novelaId
         );
     }
 
@@ -42,6 +61,15 @@ public class ServerRepository {
         public int           total;
         public int           page;
         public List<EpisodeDto> episodes;
+    }
+
+    static class NovelaDto {
+        public String id;
+        public String title;
+        public String description;
+        public String country_code;
+        public String poster_url;
+        public int    episode_count;
     }
 
     static class EpisodeDto {
@@ -99,6 +127,66 @@ public class ServerRepository {
 
     private void fallbackToTmdb(FeedCallback callback) {
         callback.onSuccess(MockDataProvider.getFeedEpisodes(), false);
+    }
+
+    public void loadNovelas(final NovelasCallback callback) {
+        api.getNovelas().enqueue(new Callback<List<NovelaDto>>() {
+            public void onResponse(Call<List<NovelaDto>> call,
+                                   Response<List<NovelaDto>> response) {
+                if (response.isSuccessful() && response.body() != null
+                        && !response.body().isEmpty()) {
+                    callback.onSuccess(mapNovelas(response.body()));
+                } else {
+                    callback.onError("Resposta vazia");
+                }
+            }
+            public void onFailure(Call<List<NovelaDto>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void loadNovelaEpisodes(String novelaId, final EpisodesCallback callback) {
+        api.getNovelaEpisodes(novelaId).enqueue(new Callback<List<EpisodeDto>>() {
+            public void onResponse(Call<List<EpisodeDto>> call,
+                                   Response<List<EpisodeDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(mapAll(response.body()));
+                } else {
+                    callback.onError("Resposta vazia");
+                }
+            }
+            public void onFailure(Call<List<EpisodeDto>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    private List<Novela> mapNovelas(List<NovelaDto> dtos) {
+        List<Novela> result = new ArrayList<>();
+        for (NovelaDto dto : dtos) {
+            String flag = getFlag(dto.country_code);
+            result.add(new Novela(
+                    dto.id,
+                    dto.title != null ? dto.title : "",
+                    dto.description != null ? dto.description : "",
+                    dto.poster_url != null ? dto.poster_url : "",
+                    flag,
+                    dto.country_code != null ? dto.country_code : "",
+                    new ArrayList<Episode>()
+            ));
+        }
+        return result;
+    }
+
+    private String getFlag(String code) {
+        if ("JP".equals(code)) return "\uD83C\uDDEF\uD83C\uDDF5";
+        if ("KR".equals(code)) return "\uD83C\uDDF0\uD83C\uDDF7";
+        if ("TR".equals(code)) return "\uD83C\uDDF9\uD83C\uDDF7";
+        if ("MX".equals(code)) return "\uD83C\uDDF2\uD83C\uDDFD";
+        if ("CN".equals(code)) return "\uD83C\uDDE8\uD83C\uDDF3";
+        if ("BR".equals(code)) return "\uD83C\uDDE7\uD83C\uDDF7";
+        return "\uD83C\uDF0D";
     }
 
     private List<Episode> mapAll(List<EpisodeDto> dtos) {
