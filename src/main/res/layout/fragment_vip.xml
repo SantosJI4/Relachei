@@ -124,6 +124,15 @@
                 android:text="🪙 0 moedas" />
         <!-- Nota: tv_vip_coins no layout_vip_active usa id tv_vip_coins_active -->
 
+            <LinearLayout
+                android:id="@+id/ll_vip_plans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" >
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Divider -->
@@ -156,14 +165,14 @@
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_coin_packs"
+        <LinearLayout
+            android:id="@+id/ll_coin_packs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false" />
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" >
+        </LinearLayout>
 
         <!-- === SEÇÃO: ASSISTIR ANÚNCIO === -->
         <LinearLayout

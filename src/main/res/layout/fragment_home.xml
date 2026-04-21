@@ -6,10 +6,12 @@
     android:background="@color/bg_primary">
 
     <!-- Feed vertical full-screen -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/feed_view_pager"
+    <ListView
+        android:id="@+id/feed_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
     <!-- HUD topo: saldo de moedas -->
     <LinearLayout

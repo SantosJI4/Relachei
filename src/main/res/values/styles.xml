@@ -38,15 +38,6 @@
     </style>
 
 </resources>
-        <item name="colorPrimary">@color/red_primary</item>
-        <item name="colorPrimaryDark">@color/red_dark</item>
-        <item name="colorAccent">@color/red_primary</item>
-        <item name="android:windowBackground">@color/bg_primary</item>
-        <item name="android:statusBarColor">@color/bg_primary</item>
-        <item name="android:navigationBarColor">@color/nav_background</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:textColor">@color/text_primary</item>
-    </style>
 
     <!-- Splash sem barra -->
     <style name="Theme.NoveFlix.Splash" parent="Theme.NoveFlix">
