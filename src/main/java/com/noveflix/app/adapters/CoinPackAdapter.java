@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.noveflix.app.R;
+import com.noveflix.app.R;import com.noveflix.app.R;
 import com.noveflix.app.models.CoinPack;
 
 import java.util.List;

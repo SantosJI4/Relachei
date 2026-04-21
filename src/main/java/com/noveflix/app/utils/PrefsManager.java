@@ -3,6 +3,8 @@ package com.noveflix.app.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.noveflix.app.R;
+
 import com.noveflix.app.models.VipPlan;
 
 public class PrefsManager {

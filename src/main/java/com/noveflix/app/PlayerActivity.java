@@ -10,6 +10,8 @@ import android.widget.VideoView;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.noveflix.app.R;
+
 public class PlayerActivity extends AppCompatActivity {
 
     public static final String EXTRA_VIDEO_URL     = "video_url";
