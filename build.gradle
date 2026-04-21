@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:2.3.3'
     }
 }
 
@@ -19,10 +19,6 @@ repositories {
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
-    
-    aaptOptions {
-        noCompress 'webp'
-    }
     
     defaultConfig {
         applicationId "com.noveflix.app"
