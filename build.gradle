@@ -13,6 +13,15 @@ buildscript {
 
 apply plugin: 'com.android.application'
 
+repositories {
+    google()
+    mavenCentral()
+    maven {
+        url "https://maven.google.com"
+    }
+    jcenter()
+}
+
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
