@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import android.support.v7.app.AppCompatActivity;
 
-import com.noveflix.app.R;
 import com.noveflix.app.utils.PrefsManager;
 
 public class SplashActivity extends AppCompatActivity {
