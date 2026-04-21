@@ -139,7 +139,6 @@
         android:background="@color/transparent"
         android:text="Agora não"
         android:textColor="@color/text_hint"
-        android:textSize="14sp"
-        android:stateListAnimator="@null" />
+        android:textSize="14sp" />
 
 </LinearLayout>

@@ -107,7 +107,6 @@
         android:text="ASSINAR"
         android:textColor="@color/text_primary"
         android:textSize="14sp"
-        android:textStyle="bold"
-        android:stateListAnimator="@null" />
+        android:textStyle="bold" />
 
 </LinearLayout>
