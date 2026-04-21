@@ -28,7 +28,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs = PrefsManager.getInstance(requireContext());
+        prefs = PrefsManager.getInstance(getActivity());
 
         TextView tvCoins      = view.findViewById(R.id.tv_profile_coins);
         TextView tvEpisodes   = view.findViewById(R.id.tv_profile_episodes);
@@ -53,21 +53,21 @@ public class ProfileFragment extends Fragment {
         btnCoins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(requireContext(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(requireContext(), "Em breve: histórico!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Em breve: histórico!", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(requireContext(), "Em breve: configurações!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Em breve: configurações!", Toast.LENGTH_SHORT).show();
             }
         });
     }

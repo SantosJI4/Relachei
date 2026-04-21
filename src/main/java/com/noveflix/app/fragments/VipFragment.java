@@ -43,7 +43,7 @@ public class VipFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs = PrefsManager.getInstance(requireContext());
+        prefs = PrefsManager.getInstance(getActivity());
 
         tvVipStatus      = view.findViewById(R.id.tv_vip_status);
         // tv_vip_coins é o saldo na aba benefits; tv_vip_coins_active é na aba ativo
@@ -62,7 +62,7 @@ public class VipFragment extends Fragment {
             }
         });
         rvPlans.setLayoutManager(new LinearLayoutManager(
-                requireContext(), LinearLayoutManager.HORIZONTAL, false));
+                getActivity(), LinearLayoutManager.HORIZONTAL, false));
         rvPlans.setAdapter(planAdapter);
 
         // Setup Coin packs RecyclerView
@@ -75,7 +75,7 @@ public class VipFragment extends Fragment {
             }
         });
         rvCoins.setLayoutManager(new LinearLayoutManager(
-                requireContext(), LinearLayoutManager.HORIZONTAL, false));
+                getActivity(), LinearLayoutManager.HORIZONTAL, false));
         rvCoins.setAdapter(coinAdapter);
 
         updateVipStatus();
@@ -117,7 +117,7 @@ public class VipFragment extends Fragment {
             prefs.addCoins(plan.getBonusCoins());
         }
         updateVipStatus();
-        Toast.makeText(requireContext(),
+        Toast.makeText(getActivity(),
                 "✅ " + plan.getName() + " ativado! " +
                         (plan.getBonusCoins() > 0 ? "+" + plan.getBonusCoins() + " moedas bônus!" : ""),
                 Toast.LENGTH_LONG).show();
@@ -127,7 +127,7 @@ public class VipFragment extends Fragment {
         // TODO: integrar Google Play Billing
         prefs.addCoins(pack.getTotalCoins());
         updateVipStatus();
-        Toast.makeText(requireContext(),
+        Toast.makeText(getActivity(),
                 "🪙 +" + pack.getTotalCoins() + " moedas adicionadas!",
                 Toast.LENGTH_SHORT).show();
     }

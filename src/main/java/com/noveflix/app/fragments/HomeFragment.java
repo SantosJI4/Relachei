@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs            = PrefsManager.getInstance(requireContext());
+        prefs            = PrefsManager.getInstance(getActivity());
         tvCoinBalance    = view.findViewById(R.id.tv_coin_balance_home);
         feedRecyclerView = (RecyclerView) view.findViewById(R.id.feed_view_pager);
         serverRepository = new ServerRepository();
@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         episodes = MockDataProvider.getFeedEpisodes();
         adapter  = new FeedAdapter(episodes, this);
 
-        LinearLayoutManager lm = new LinearLayoutManager(requireContext());
+        LinearLayoutManager lm = new LinearLayoutManager(getActivity());
         feedRecyclerView.setLayoutManager(lm);
         feedRecyclerView.setAdapter(adapter);
 
@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     }
 
     private void openPlayer(Episode episode) {
-        Intent intent = new Intent(requireContext(), PlayerActivity.class);
+        Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.putExtra(PlayerActivity.EXTRA_VIDEO_URL,     episode.getVideoUrl());
         intent.putExtra(PlayerActivity.EXTRA_EPISODE_TITLE, episode.getTitle());
         intent.putExtra(PlayerActivity.EXTRA_NOVELA_TITLE,  episode.getNovelaTitle());
@@ -142,9 +142,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     }
 
     private void showNoCoinsDialog(Episode episode) {
-        if (getContext() == null) return;
+        if (getActivity() == null) return;
 
-        final Dialog dialog = new Dialog(requireContext(), R.style.Theme_NoveFlix);
+        final Dialog dialog = new Dialog(getActivity(), R.style.Theme_NoveFlix);
         dialog.setContentView(R.layout.dialog_no_coins);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.shape_bottom_sheet);
@@ -169,7 +169,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Toast.makeText(requireContext(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -194,9 +194,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     }
 
     private void showAdRewardDialog() {
-        if (getContext() == null) return;
+        if (getActivity() == null) return;
 
-        final Dialog dialog = new Dialog(requireContext(), R.style.Theme_NoveFlix);
+        final Dialog dialog = new Dialog(getActivity(), R.style.Theme_NoveFlix);
         dialog.setContentView(R.layout.dialog_ad_reward);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.shape_bottom_sheet);
@@ -238,6 +238,6 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         prefs.addCoins(coins);
         updateCoinDisplay();
         adapter.notifyDataSetChanged();
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }
