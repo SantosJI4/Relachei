@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.noveflix.app.R;
@@ -106,8 +105,7 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
                 for (String benefit : plan.getBenefits()) {
                     TextView tv = new TextView(itemView.getContext());
                     tv.setText("✓  " + benefit);
-                    tv.setTextColor(ContextCompat.getColor(itemView.getContext(),
-                            R.color.text_secondary));
+                    tv.setTextColor(0xFFBBBBBB);
                     tv.setTextSize(12f);
                     tv.setPadding(0, 4, 0, 4);
                     llBenefits.addView(tv);

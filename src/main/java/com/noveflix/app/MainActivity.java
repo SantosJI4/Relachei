@@ -1,9 +1,8 @@
 package com.noveflix.app;
 
 import android.os.Bundle;
-import android.view.View;
-
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.noveflix.app.fragments.HomeFragment;
 import com.noveflix.app.fragments.ProfileFragment;
 import com.noveflix.app.fragments.VipFragment;
@@ -47,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
             activeFragment = homeFragment;
         }
 
-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.nav_home) {
                     showFragment(homeFragment);

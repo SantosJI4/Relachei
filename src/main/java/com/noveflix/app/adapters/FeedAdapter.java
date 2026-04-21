@@ -158,14 +158,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
         }
 
         private String getCountryName(String code) {
-            switch (code) {
-                case "JP": return "Japão";
-                case "KR": return "Coreia";
-                case "TR": return "Turquia";
-                case "MX": return "México";
-                case "CN": return "China";
-                default:   return code;
-            }
+            if ("JP".equals(code)) return "Jap\u00e3o";
+            if ("KR".equals(code)) return "Coreia";
+            if ("TR".equals(code)) return "Turquia";
+            if ("MX".equals(code)) return "M\u00e9xico";
+            if ("CN".equals(code)) return "China";
+            return code;
         }
     }
 }
