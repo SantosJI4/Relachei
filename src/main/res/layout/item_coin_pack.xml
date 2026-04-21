@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Card de Pacote de Moedas para o RecyclerView horizontal -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/shape_card_dark"
+    android:layout_marginEnd="12dp"
+    android:padding="14dp"
+    android:gravity="center">
+
+    <!-- Badge de desconto (% de economia) -->
+    <TextView
+        android:id="@+id/tv_coin_pack_savings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/shape_badge_red"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/text_primary"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:text="-20%"
+        android:visibility="gone" />
+
+    <!-- Ícone de moeda grande -->
+    <ImageView
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:src="@drawable/ic_coin"
+        android:contentDescription="Moedas" />
+
+    <!-- Quantidade de moedas -->
+    <TextView
+        android:id="@+id/tv_coin_pack_coins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/coin_color"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="🪙 50" />
+
+    <!-- Bônus -->
+    <TextView
+        android:id="@+id/tv_coin_pack_bonus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/online_green"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="+20 bônus"
+        android:visibility="gone" />
+
+    <!-- Nome do pacote -->
+    <TextView
+        android:id="@+id/tv_coin_pack_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="Popular" />
+
+    <!-- Preço -->
+    <TextView
+        android:id="@+id/tv_coin_pack_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="R$ 7,99" />
+
+    <!-- Botão comprar -->
+    <Button
+        android:id="@+id/btn_buy_pack"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_button_red"
+        android:text="COMPRAR"
+        android:textColor="@color/text_primary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

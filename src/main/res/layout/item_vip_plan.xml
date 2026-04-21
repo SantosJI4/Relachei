@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Card de Plano VIP para o RecyclerView horizontal da tela VIP -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="220dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/shape_card_dark"
+    android:layout_marginEnd="12dp"
+    android:padding="16dp">
+
+    <!-- Badge "MAIS POPULAR" ou "MELHOR PREÇO" -->
+    <TextView
+        android:id="@+id/tv_plan_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_badge_red"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:textColor="@color/text_primary"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:text="MAIS POPULAR"
+        android:visibility="gone" />
+
+    <!-- Nome do plano -->
+    <TextView
+        android:id="@+id/tv_plan_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="Mensal" />
+
+    <!-- Subtítulo -->
+    <TextView
+        android:id="@+id/tv_plan_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:text="30 dias premium" />
+
+    <!-- Preço em destaque -->
+    <TextView
+        android:id="@+id/tv_plan_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/red_primary"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:text="R$ 24,99" />
+
+    <!-- Detalhe de preço -->
+    <TextView
+        android:id="@+id/tv_plan_price_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_hint"
+        android:textSize="11sp"
+        android:text="por mês" />
+
+    <!-- Bônus de moedas -->
+    <TextView
+        android:id="@+id/tv_plan_bonus_coins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_coin"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:textColor="@android:color/black"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:text="🪙 +100 moedas bônus"
+        android:visibility="gone" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Lista de benefícios (preenchida via Java) -->
+    <LinearLayout
+        android:id="@+id/ll_plan_benefits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Botão de assinatura -->
+    <Button
+        android:id="@+id/btn_subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/bg_button_red"
+        android:text="ASSINAR"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

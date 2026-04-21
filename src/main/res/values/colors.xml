@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- === TEMA PRINCIPAL: Vermelho + Preto + Branco === -->
+
+    <!-- Vermelho -->
+    <color name="red_primary">#E50914</color>
+    <color name="red_dark">#B20710</color>
+    <color name="red_light">#FF3B3B</color>
+    <color name="red_transparent">#33E50914</color>
+
+    <!-- Preto / Fundo -->
+    <color name="bg_primary">#0A0A0A</color>
+    <color name="bg_surface">#141414</color>
+    <color name="bg_card">#1E1E1E</color>
+    <color name="bg_elevated">#2A2A2A</color>
+    <color name="bg_overlay">#CC000000</color>
+    <color name="bg_gradient_start">#00000000</color>
+    <color name="bg_gradient_end">#F0000000</color>
+
+    <!-- Branco / Texto -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#BBBBBB</color>
+    <color name="text_hint">#666666</color>
+    <color name="text_disabled">#444444</color>
+
+    <!-- VIP / Ouro -->
+    <color name="gold_vip">#FFD700</color>
+    <color name="gold_dark">#C9A227</color>
+    <color name="gold_light">#FFE55C</color>
+    <color name="gold_transparent">#33FFD700</color>
+
+    <!-- Moedas -->
+    <color name="coin_color">#FFC107</color>
+    <color name="coin_dark">#FF8F00</color>
+
+    <!-- Status / Utilitários -->
+    <color name="divider">#2A2A2A</color>
+    <color name="ripple_white">#20FFFFFF</color>
+    <color name="ripple_red">#20E50914</color>
+    <color name="online_green">#4CAF50</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Bottom Navigation -->
+    <color name="nav_selected">#E50914</color>
+    <color name="nav_unselected">#666666</color>
+    <color name="nav_background">#111111</color>
+</resources>

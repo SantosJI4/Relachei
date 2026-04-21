@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NoveFlix</string>
+    <string name="app_tagline">Novelas do Mundo Inteiro</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Início</string>
+    <string name="nav_vip">VIP</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Coins -->
+    <string name="coins">moedas</string>
+    <string name="coin_balance">%d moedas</string>
+    <string name="welcome_coins">Bem-vindo! Você recebeu 10 moedas grátis!</string>
+    <string name="not_enough_coins">Moedas insuficientes</string>
+    <string name="buy_coins">Comprar Moedas</string>
+    <string name="watch_ad_coins">Assistir Anúncio e Ganhar Moedas</string>
+    <string name="ad_short_reward">Anúncio Rápido (+1 moeda)</string>
+    <string name="ad_long_reward">Anúncio Longo (+3 moedas)</string>
+
+    <!-- VIP -->
+    <string name="become_vip">SEJA VIP</string>
+    <string name="vip_subtitle">Assista ilimitado, sem anúncios</string>
+    <string name="vip_active">VIP Ativo</string>
+    <string name="subscribe_now">Assinar Agora</string>
+    <string name="most_popular">MAIS POPULAR</string>
+    <string name="best_value">MELHOR PREÇO</string>
+    <string name="vip_expires_in">VIP expira em: %s</string>
+
+    <!-- Plans -->
+    <string name="plan_pack_price">R$ 4,99</string>
+    <string name="plan_flash_price">R$ 2,99</string>
+    <string name="plan_weekly_price">R$ 9,99</string>
+    <string name="plan_monthly_price">R$ 24,99</string>
+    <string name="plan_annual_price">R$ 149,99</string>
+
+    <!-- Feed / Player -->
+    <string name="episode_number">Ep. %d</string>
+    <string name="unlock_episode">Desbloquear • 2 moedas</string>
+    <string name="free_episode">Grátis</string>
+    <string name="buy">Comprar</string>
+    <string name="loading">Carregando…</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Meu Perfil</string>
+    <string name="episodes_watched">Ep. assistidos</string>
+    <string name="novelas_saved">Novelas salvas</string>
+    <string name="my_list">Minha Lista</string>
+    <string name="history">Histórico</string>
+    <string name="settings">Configurações</string>
+    <string name="logout">Sair</string>
+    <string name="guest_user">Visitante</string>
+    <string name="login_signup">Entrar / Cadastrar</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_no_coins_title">Moedas insuficientes</string>
+    <string name="dialog_no_coins_msg">Assista um anúncio ou compre moedas para continuar.</string>
+    <string name="dialog_watch_ad">Ver Anúncio</string>
+    <string name="dialog_buy_coins">Comprar Moedas</string>
+    <string name="dialog_go_vip">Ser VIP</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+</resources>
