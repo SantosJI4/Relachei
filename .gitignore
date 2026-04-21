@@ -1,0 +1,21 @@
+# Build output
+build/
+.gradle/
+*.apk
+*.dex
+*.class
+
+# IDE
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local properties
+local.properties
+
+# Gradle
+.gradle
+gradle/wrapper/gradle-wrapper.jar
