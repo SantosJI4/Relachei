@@ -135,8 +135,8 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         View target = feedListView.getChildAt(childIndex);
         if (target == null) return;
 
-        final VideoView  vv      = (VideoView)  target.findViewById(R.id.vv_episode);
-        final ImageView  playBtn = (ImageView)  target.findViewById(R.id.iv_play_btn);
+        final VideoView  vv         = (VideoView)  target.findViewById(R.id.vv_episode);
+        final View       playContainer = target.findViewById(R.id.fl_play_container);
         if (vv == null) return;
 
         if (position < episodes.size()) {
@@ -146,12 +146,12 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
                 currentPlayingPosition = position;
                 vv.setVideoURI(Uri.parse(url));
                 vv.start();
-                // Esconde botão enquanto toca
-                if (playBtn != null) playBtn.setVisibility(View.GONE);
+                // Esconde container enquanto toca
+                if (playContainer != null) playContainer.setVisibility(View.GONE);
                 vv.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
                     public void onCompletion(android.media.MediaPlayer mp) {
                         mp.start(); // loop
-                        if (playBtn != null) playBtn.setVisibility(View.GONE);
+                        if (playContainer != null) playContainer.setVisibility(View.GONE);
                     }
                 });
             }
@@ -165,10 +165,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             if (child == null) continue;
             VideoView vv = (VideoView) child.findViewById(R.id.vv_episode);
             if (vv != null && vv.isPlaying()) vv.pause();
-            ImageView playBtn = (ImageView) child.findViewById(R.id.iv_play_btn);
-            if (playBtn != null) {
-                playBtn.setImageResource(R.drawable.ic_play);
-                playBtn.setVisibility(View.VISIBLE);
+            View playContainer = child.findViewById(R.id.fl_play_container);
+            if (playContainer != null) {
+                playContainer.setVisibility(View.VISIBLE);
             }
         }
         currentPlayingPosition = -1;
@@ -213,12 +212,13 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         View child = feedListView.getChildAt(childIndex);
         if (child == null) return;
 
-        VideoView vv      = (VideoView) child.findViewById(R.id.vv_episode);
-        ImageView playBtn = (ImageView) child.findViewById(R.id.iv_play_btn);
+        VideoView vv           = (VideoView) child.findViewById(R.id.vv_episode);
+        View      playContainer = child.findViewById(R.id.fl_play_container);
         if (vv == null) return;
 
         if (!prefs.isVipActive() && !episode.isFree()) {
-            if (!prefs.spendCoins(2)) {
+            int cost = episode.getCoinCost();
+            if (!prefs.spendCoins(cost)) {
                 showNoCoinsDialog();
                 return;
             }
@@ -228,15 +228,12 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
 
         if (vv.isPlaying()) {
             vv.pause();
-            // Mostra botão play quando pausado
-            if (playBtn != null) {
-                playBtn.setImageResource(R.drawable.ic_play);
-                playBtn.setVisibility(View.VISIBLE);
-            }
+            // Mostra container play quando pausado
+            if (playContainer != null) playContainer.setVisibility(View.VISIBLE);
         } else {
             vv.start();
-            // Esconde botão quando tocando
-            if (playBtn != null) playBtn.setVisibility(View.GONE);
+            // Esconde container quando tocando
+            if (playContainer != null) playContainer.setVisibility(View.GONE);
         }
     }
 

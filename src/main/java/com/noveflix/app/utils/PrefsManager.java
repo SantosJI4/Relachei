@@ -27,13 +27,24 @@ public class PrefsManager {
     public static PrefsManager getInstance(Context context) {
         if (instance == null) {
             instance = new PrefsManager(context);
+            instance.initFirstLaunch();
         }
         return instance;
     }
 
+    // Dá 25 moedas de boas-vindas apenas no primeiro launch
+    private void initFirstLaunch() {
+        if (!prefs.getBoolean(KEY_FIRST_LAUNCH, false)) {
+            prefs.edit()
+                .putBoolean(KEY_FIRST_LAUNCH, true)
+                .putInt(KEY_COINS, 25)
+                .apply();
+        }
+    }
+
     // === MOEDAS ===
     public int getCoins() {
-        return prefs.getInt(KEY_COINS, 0);
+        return prefs.getInt(KEY_COINS, 25);
     }
 
     public void setCoins(int amount) {

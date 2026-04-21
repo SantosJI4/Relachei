@@ -92,7 +92,7 @@ public class Episode {
     public void setCountryCode(String countryCode) { this.countryCode = countryCode; }
 
     public boolean isFree() {
-        return isFirst || coinCost == 0;
+        return coinCost == 0;
     }
 
     public String getFormattedDuration() {
