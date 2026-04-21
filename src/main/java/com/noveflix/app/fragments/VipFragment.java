@@ -1,19 +1,16 @@
 package com.noveflix.app.fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-
 import com.noveflix.app.R;
-import com.noveflix.app.adapters.CoinPackAdapter;
-import com.noveflix.app.adapters.VipPlanAdapter;
 import com.noveflix.app.data.MockDataProvider;
 import com.noveflix.app.models.CoinPack;
 import com.noveflix.app.models.VipPlan;
@@ -27,11 +24,11 @@ import java.util.Locale;
 public class VipFragment extends Fragment {
 
     private PrefsManager prefs;
-    private TextView tvVipStatus;
-    private TextView tvVipCoins;
-    private TextView tvVipCoinsActive;
-    private View     layoutVipActive;
-    private View     layoutVipBenefits;
+    private TextView     tvVipStatus;
+    private TextView     tvVipCoins;
+    private TextView     tvVipCoinsActive;
+    private View         layoutVipActive;
+    private View         layoutVipBenefits;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,40 +38,76 @@ public class VipFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs = PrefsManager.getInstance(getActivity());
-
-        tvVipStatus      = view.findViewById(R.id.tv_vip_status);
-        // tv_vip_coins é o saldo na aba benefits; tv_vip_coins_active é na aba ativo
-        tvVipCoins       = view.findViewById(R.id.tv_vip_coins);
-        tvVipCoinsActive = view.findViewById(R.id.tv_vip_coins_active);
-        layoutVipActive  = view.findViewById(R.id.layout_vip_active);
+        prefs             = PrefsManager.getInstance(getActivity());
+        tvVipStatus       = (TextView) view.findViewById(R.id.tv_vip_status);
+        tvVipCoins        = (TextView) view.findViewById(R.id.tv_vip_coins);
+        tvVipCoinsActive  = (TextView) view.findViewById(R.id.tv_vip_coins_active);
+        layoutVipActive   = view.findViewById(R.id.layout_vip_active);
         layoutVipBenefits = view.findViewById(R.id.layout_vip_benefits);
 
-        // Setup VIP plans RecyclerView (rolagem horizontal)
-        RecyclerView rvPlans = view.findViewById(R.id.rv_vip_plans);
-        List<VipPlan> plans  = MockDataProvider.getVipPlans();
-        VipPlanAdapter planAdapter = new VipPlanAdapter(plans, new VipPlanAdapter.OnPlanSelectedListener() {
-            public void onPlanSelected(VipPlan plan) {
-                onPlanSelectedInternal(plan);
-            }
-        });
-        rvPlans.setLayoutManager(new LinearLayoutManager(
-                getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        rvPlans.setAdapter(planAdapter);
-
-        // Setup Coin packs RecyclerView
-        RecyclerView rvCoins = view.findViewById(R.id.rv_coin_packs);
-        List<CoinPack> packs = MockDataProvider.getCoinPacks();
-        CoinPackAdapter coinAdapter = new CoinPackAdapter(packs, new CoinPackAdapter.OnCoinPackSelectedListener() {
-            public void onCoinPackSelected(CoinPack pack) {
-                onCoinPackSelectedInternal(pack);
-            }
-        });
-        rvCoins.setLayoutManager(new LinearLayoutManager(
-                getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        rvCoins.setAdapter(coinAdapter);
-
+        inflatePlans(view);
+        inflateCoinPacks(view);
         updateVipStatus();
+    }
+
+    private void inflatePlans(View root) {
+        LinearLayout container = (LinearLayout) root.findViewById(R.id.ll_vip_plans);
+        if (container == null) return;
+
+        List<VipPlan> plans = MockDataProvider.getVipPlans();
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+        for (int i = 0; i < plans.size(); i++) {
+            final VipPlan plan = plans.get(i);
+            View item = inflater.inflate(R.layout.item_vip_plan, container, false);
+
+            TextView tvName  = (TextView) item.findViewById(R.id.tv_plan_name);
+            TextView tvPrice = (TextView) item.findViewById(R.id.tv_plan_price);
+            TextView tvSub   = (TextView) item.findViewById(R.id.tv_plan_subtitle);
+            Button   btnSub  = (Button)   item.findViewById(R.id.btn_subscribe);
+
+            tvName.setText(plan.getName());
+            tvPrice.setText(plan.getPrice());
+            tvSub.setText(plan.getSubtitle());
+
+            btnSub.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    onPlanSelected(plan);
+                }
+            });
+
+            container.addView(item);
+        }
+    }
+
+    private void inflateCoinPacks(View root) {
+        LinearLayout container = (LinearLayout) root.findViewById(R.id.ll_coin_packs);
+        if (container == null) return;
+
+        List<CoinPack> packs = MockDataProvider.getCoinPacks();
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+        for (int i = 0; i < packs.size(); i++) {
+            final CoinPack pack = packs.get(i);
+            View item = inflater.inflate(R.layout.item_coin_pack, container, false);
+
+            TextView tvName  = (TextView) item.findViewById(R.id.tv_coin_pack_name);
+            TextView tvCoins = (TextView) item.findViewById(R.id.tv_coin_pack_coins);
+            TextView tvPrice = (TextView) item.findViewById(R.id.tv_coin_pack_price);
+            Button   btnBuy  = (Button)   item.findViewById(R.id.btn_buy_pack);
+
+            tvName.setText(pack.getName());
+            tvCoins.setText("" + pack.getTotalCoins() + " moedas");
+            tvPrice.setText(pack.getPrice());
+
+            btnBuy.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    onCoinPackSelected(pack);
+                }
+            });
+
+            container.addView(item);
+        }
     }
 
     public void onResume() {
@@ -86,44 +119,38 @@ public class VipFragment extends Fragment {
         if (prefs.isVipActive()) {
             layoutVipActive.setVisibility(View.VISIBLE);
             layoutVipBenefits.setVisibility(View.GONE);
-            tvVipCoins.setText("🪙 " + prefs.getCoins() + " moedas");
-            if (tvVipCoinsActive != null) tvVipCoinsActive.setText("🪙 " + prefs.getCoins() + " moedas");
-
+            tvVipCoins.setText("" + prefs.getCoins() + " moedas");
+            if (tvVipCoinsActive != null) {
+                tvVipCoinsActive.setText("" + prefs.getCoins() + " moedas");
+            }
             long expiry = prefs.getVipExpiry();
             if (expiry > 0) {
-                String expiryStr = new SimpleDateFormat("dd/MM/yyyy HH:mm",
+                String exp = new SimpleDateFormat("dd/MM/yyyy HH:mm",
                         Locale.getDefault()).format(new Date(expiry));
-                tvVipStatus.setText("✅ VIP ativo — expira em " + expiryStr);
+                tvVipStatus.setText("VIP ativo - expira em " + exp);
             } else {
-                int remaining = prefs.getRemainingVipNovelas();
-                tvVipStatus.setText("✅ Pack VIP — " + remaining + " novela(s) restante(s)");
+                int rem = prefs.getRemainingVipNovelas();
+                tvVipStatus.setText("Pack VIP - " + rem + " novela(s)");
             }
         } else {
             layoutVipActive.setVisibility(View.GONE);
             layoutVipBenefits.setVisibility(View.VISIBLE);
-            tvVipCoins.setText("🪙 " + prefs.getCoins() + " moedas");
+            tvVipCoins.setText("" + prefs.getCoins() + " moedas");
         }
     }
 
-    private void onPlanSelectedInternal(VipPlan plan) {
-        // TODO: integrar Google Play Billing para pagamento real
+    private void onPlanSelected(VipPlan plan) {
         prefs.activateVip(plan.getType(), plan.getDurationMillis(), plan.getNovelaPacks());
         if (plan.getBonusCoins() > 0) {
             prefs.addCoins(plan.getBonusCoins());
         }
         updateVipStatus();
-        Toast.makeText(getActivity(),
-                "✅ " + plan.getName() + " ativado! " +
-                        (plan.getBonusCoins() > 0 ? "+" + plan.getBonusCoins() + " moedas bônus!" : ""),
-                Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), plan.getName() + " ativado!", Toast.LENGTH_LONG).show();
     }
 
-    private void onCoinPackSelectedInternal(CoinPack pack) {
-        // TODO: integrar Google Play Billing
+    private void onCoinPackSelected(CoinPack pack) {
         prefs.addCoins(pack.getTotalCoins());
         updateVipStatus();
-        Toast.makeText(getActivity(),
-                "🪙 +" + pack.getTotalCoins() + " moedas adicionadas!",
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "+" + pack.getTotalCoins() + " moedas!", Toast.LENGTH_SHORT).show();
     }
 }
