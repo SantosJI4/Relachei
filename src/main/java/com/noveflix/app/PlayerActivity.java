@@ -45,7 +45,12 @@ public class PlayerActivity extends AppCompatActivity {
 
         tvNovela.setText(novelaTitle);
         tvEpisode.setText("Ep. " + epNum + " — " + epTitle);
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         playerView = findViewById(R.id.player_view);
 

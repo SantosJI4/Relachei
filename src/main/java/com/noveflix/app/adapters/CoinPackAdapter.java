@@ -64,7 +64,7 @@ public class CoinPackAdapter extends RecyclerView.Adapter<CoinPackAdapter.CoinPa
             btnBuy    = itemView.findViewById(R.id.btn_buy_pack);
         }
 
-        void bind(CoinPack pack, OnCoinPackSelectedListener listener) {
+        void bind(final CoinPack pack, final OnCoinPackSelectedListener listener) {
             tvName.setText(pack.getName());
             tvCoins.setText("🪙 " + pack.getCoins());
             tvPrice.setText(pack.getPrice());

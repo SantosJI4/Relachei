@@ -70,7 +70,7 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
             btnSubscribe = itemView.findViewById(R.id.btn_subscribe);
         }
 
-        void bind(VipPlan plan, OnPlanSelectedListener listener) {
+        void bind(final VipPlan plan, final OnPlanSelectedListener listener) {
             tvName.setText(plan.getName());
             tvSubtitle.setText(plan.getSubtitle());
             tvPrice.setText(plan.getPrice());
