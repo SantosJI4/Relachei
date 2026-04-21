@@ -11,17 +11,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Busca séries e episódios do TMDB e converte para o modelo Episode do app.
- *
- * Fluxo:
- *  1. discoverTv(country) → lista de TvShow
- *  2. Para cada show → getSeason(id, 1) → lista de TvEpisode
- *  3. Mapeia TvEpisode → Episode (modelo do feed)
- */
 public class TmdbRepository {
 
-    // Genre 10766 = Soap Opera, deixamos vazio para pegar dramas em geral
     private static final String SORT_POPULAR  = "popularity.desc";
     private static final String LANGUAGE_PTBR = "pt-BR";
 
@@ -33,46 +24,53 @@ public class TmdbRepository {
         void onError(String message);
     }
 
+    // Substitui java.util.function.Consumer que exige API 24+ (minSdk é 21)
+    interface EpisodesCallback {
+        void accept(List<Episode> episodes);
+    }
+
     public TmdbRepository() {
         api    = RetrofitClient.getInstance().getApi();
         apiKey = BuildConfig.TMDB_API_KEY;
     }
 
-    /**
-     * Monta o feed completo buscando os top shows dos 5 países de origem.
-     * Cada show gera N episódios (limite por show configurável).
-     */
-    public void loadFeed(int showsPerCountry, int episodesPerShow, FeedCallback callback) {
-        String[] countries = {"JP", "KR", "TR", "MX", "CN"};
-        List<Episode> result      = new ArrayList<>();
-        AtomicInteger pending     = new AtomicInteger(countries.length);
+    public void loadFeed(final int showsPerCountry, final int episodesPerShow,
+                         final FeedCallback callback) {
+        final String[]      countries = {"JP", "KR", "TR", "MX", "CN"};
+        final List<Episode> result    = new ArrayList<>();
+        final AtomicInteger pending   = new AtomicInteger(countries.length);
 
-        for (String code : countries) {
+        for (final String code : countries) {
             api.discoverTv(apiKey, LANGUAGE_PTBR, code, SORT_POPULAR, 1, "")
                .enqueue(new Callback<TmdbModels.TvDiscoverResponse>() {
 
                    @Override
                    public void onResponse(Call<TmdbModels.TvDiscoverResponse> call,
                                           Response<TmdbModels.TvDiscoverResponse> response) {
-                       if (response.isSuccessful() && response.body() != null) {
-                           List<TmdbModels.TvShow> shows = response.body().results;
-                           int limit = Math.min(shows.size(), showsPerCountry);
+                       if (response.isSuccessful() && response.body() != null
+                               && response.body().results != null
+                               && !response.body().results.isEmpty()) {
 
-                           AtomicInteger seasonPending = new AtomicInteger(limit);
+                           final List<TmdbModels.TvShow> shows = response.body().results;
+                           final int limit = Math.min(shows.size(), showsPerCountry);
+                           final AtomicInteger seasonPending = new AtomicInteger(limit);
 
                            for (int i = 0; i < limit; i++) {
-                               TmdbModels.TvShow show = shows.get(i);
+                               final TmdbModels.TvShow show = shows.get(i);
                                fetchSeasonEpisodes(show, code, episodesPerShow,
-                                       episodes -> {
-                                           synchronized (result) {
-                                               result.addAll(episodes);
-                                           }
-                                           if (seasonPending.decrementAndGet() == 0) {
-                                               if (pending.decrementAndGet() == 0) {
-                                                   callback.onSuccess(result);
+                                       new EpisodesCallback() {
+                                           @Override
+                                           public void accept(List<Episode> eps) {
+                                               synchronized (result) {
+                                                   result.addAll(eps);
+                                               }
+                                               if (seasonPending.decrementAndGet() == 0) {
+                                                   if (pending.decrementAndGet() == 0) {
+                                                       callback.onSuccess(result);
+                                                   }
                                                }
                                            }
-                               });
+                                       });
                            }
                        } else {
                            if (pending.decrementAndGet() == 0) {
@@ -95,12 +93,8 @@ public class TmdbRepository {
         }
     }
 
-    /**
-     * Busca episódios da temporada 1 de um show e converte para Episode.
-     */
-    private void fetchSeasonEpisodes(TmdbModels.TvShow show, String countryCode,
-                                     int maxEpisodes,
-                                     java.util.function.Consumer<List<Episode>> onDone) {
+    private void fetchSeasonEpisodes(final TmdbModels.TvShow show, final String countryCode,
+                                     final int maxEpisodes, final EpisodesCallback onDone) {
         api.getSeason(show.id, 1, apiKey, LANGUAGE_PTBR)
            .enqueue(new Callback<TmdbModels.TvSeasonResponse>() {
 
