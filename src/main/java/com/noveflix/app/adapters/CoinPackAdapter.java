@@ -89,7 +89,12 @@ public class CoinPackAdapter extends RecyclerView.Adapter<CoinPackAdapter.CoinPa
                 itemView.setBackgroundResource(R.drawable.shape_card_dark);
             }
 
-            btnBuy.setOnClickListener(v -> listener.onCoinPackSelected(pack));
+            btnBuy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onCoinPackSelected(pack);
+                }
+            });
         }
     }
 }

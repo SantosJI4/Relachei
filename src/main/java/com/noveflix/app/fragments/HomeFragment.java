@@ -82,12 +82,15 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     private void loadTmdbFeed() {
         serverRepository.loadFeed(40, new ServerRepository.FeedCallback() {
             @Override
-            public void onSuccess(List<Episode> loaded, boolean fromServer) {
+            public void onSuccess(final List<Episode> loaded, boolean fromServer) {
                 if (getActivity() == null || loaded.isEmpty()) return;
-                getActivity().runOnUiThread(() -> {
-                    episodes.clear();
-                    episodes.addAll(loaded);
-                    adapter.notifyDataSetChanged();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        episodes.clear();
+                        episodes.addAll(loaded);
+                        adapter.notifyDataSetChanged();
+                    }
                 });
             }
 
@@ -143,7 +146,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     private void showNoCoinsDialog(Episode episode) {
         if (getContext() == null) return;
 
-        Dialog dialog = new Dialog(requireContext(), R.style.Theme_NoveFlix);
+        final Dialog dialog = new Dialog(requireContext(), R.style.Theme_NoveFlix);
         dialog.setContentView(R.layout.dialog_no_coins);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.shape_bottom_sheet);
@@ -156,25 +159,38 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         Button btnVip   = dialog.findViewById(R.id.btn_go_vip);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
-        btnAd.setOnClickListener(v -> {
-            dialog.dismiss();
-            showAdRewardDialog();
-        });
-
-        btnCoins.setOnClickListener(v -> {
-            dialog.dismiss();
-            // TODO: abrir tela de compra de moedas (billing)
-            Toast.makeText(requireContext(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
-        });
-
-        btnVip.setOnClickListener(v -> {
-            dialog.dismiss();
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToVip();
+        btnAd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                showAdRewardDialog();
             }
         });
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnCoins.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(requireContext(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).navigateToVip();
+                }
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         dialog.show();
     }
@@ -182,7 +198,7 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
     private void showAdRewardDialog() {
         if (getContext() == null) return;
 
-        Dialog dialog = new Dialog(requireContext(), R.style.Theme_NoveFlix);
+        final Dialog dialog = new Dialog(requireContext(), R.style.Theme_NoveFlix);
         dialog.setContentView(R.layout.dialog_ad_reward);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.shape_bottom_sheet);
@@ -194,19 +210,28 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
         Button btnLongAd  = dialog.findViewById(R.id.btn_long_ad);
         Button btnCancel  = dialog.findViewById(R.id.btn_ad_cancel);
 
-        btnShortAd.setOnClickListener(v -> {
-            dialog.dismiss();
-            // TODO: integrar AdMob rewarded ad (30s → +1 moeda)
-            simulateAdReward(1, "Anúncio rápido assistido! +1 moeda 🪙");
+        btnShortAd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                simulateAdReward(1, "Anúncio rápido assistido! +1 moeda 🪙");
+            }
         });
 
-        btnLongAd.setOnClickListener(v -> {
-            dialog.dismiss();
-            // TODO: integrar AdMob rewarded ad (60s → +3 moedas)
-            simulateAdReward(3, "Anúncio completo assistido! +3 moedas 🪙");
+        btnLongAd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                simulateAdReward(3, "Anúncio completo assistido! +3 moedas 🪙");
+            }
         });
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         dialog.show();
     }

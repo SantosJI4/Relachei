@@ -58,7 +58,12 @@ public class VipFragment extends Fragment {
         // Setup VIP plans RecyclerView (rolagem horizontal)
         RecyclerView rvPlans = view.findViewById(R.id.rv_vip_plans);
         List<VipPlan> plans  = MockDataProvider.getVipPlans();
-        VipPlanAdapter planAdapter = new VipPlanAdapter(plans, this::onPlanSelected);
+        VipPlanAdapter planAdapter = new VipPlanAdapter(plans, new VipPlanAdapter.OnPlanSelectedListener() {
+            @Override
+            public void onPlanSelected(VipPlan plan) {
+                onPlanSelectedInternal(plan);
+            }
+        });
         rvPlans.setLayoutManager(new LinearLayoutManager(
                 requireContext(), LinearLayoutManager.HORIZONTAL, false));
         rvPlans.setAdapter(planAdapter);
@@ -66,7 +71,12 @@ public class VipFragment extends Fragment {
         // Setup Coin packs RecyclerView
         RecyclerView rvCoins = view.findViewById(R.id.rv_coin_packs);
         List<CoinPack> packs = MockDataProvider.getCoinPacks();
-        CoinPackAdapter coinAdapter = new CoinPackAdapter(packs, this::onCoinPackSelected);
+        CoinPackAdapter coinAdapter = new CoinPackAdapter(packs, new CoinPackAdapter.OnCoinPackSelectedListener() {
+            @Override
+            public void onCoinPackSelected(CoinPack pack) {
+                onCoinPackSelectedInternal(pack);
+            }
+        });
         rvCoins.setLayoutManager(new LinearLayoutManager(
                 requireContext(), LinearLayoutManager.HORIZONTAL, false));
         rvCoins.setAdapter(coinAdapter);
@@ -103,7 +113,7 @@ public class VipFragment extends Fragment {
         }
     }
 
-    private void onPlanSelected(VipPlan plan) {
+    private void onPlanSelectedInternal(VipPlan plan) {
         // TODO: integrar Google Play Billing para pagamento real
         prefs.activateVip(plan.getType(), plan.getDurationMillis(), plan.getNovelaPacks());
         if (plan.getBonusCoins() > 0) {
@@ -116,7 +126,7 @@ public class VipFragment extends Fragment {
                 Toast.LENGTH_LONG).show();
     }
 
-    private void onCoinPackSelected(CoinPack pack) {
+    private void onCoinPackSelectedInternal(CoinPack pack) {
         // TODO: integrar Google Play Billing
         prefs.addCoins(pack.getTotalCoins());
         updateVipStatus();

@@ -1,5 +1,6 @@
 package com.noveflix.app.network;
 
+import com.noveflix.app.data.MockDataProvider;
 import com.noveflix.app.models.Episode;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import retrofit2.http.Query;
 
 /**
  * Busca episódios direto no servidor NoveFlix.
- * Fallback automático para TMDB se o servidor retornar vazio.
+ * Fallback para dados mock se o servidor estiver vazio ou offline.
  */
 public class ServerRepository {
 
@@ -99,17 +100,7 @@ public class ServerRepository {
     }
 
     private void fallbackToTmdb(FeedCallback callback) {
-        TmdbRepository tmdb = new TmdbRepository();
-        tmdb.loadFeed(3, 5, new TmdbRepository.FeedCallback() {
-            @Override
-            public void onSuccess(List<Episode> episodes) {
-                callback.onSuccess(episodes, false);
-            }
-            @Override
-            public void onError(String message) {
-                callback.onError(message);
-            }
-        });
+        callback.onSuccess(MockDataProvider.getFeedEpisodes(), false);
     }
 
     private List<Episode> mapAll(List<EpisodeDto> dtos) {

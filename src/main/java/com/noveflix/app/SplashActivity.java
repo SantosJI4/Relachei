@@ -54,16 +54,18 @@ public class SplashActivity extends AppCompatActivity {
         tagline.startAnimation(fadeInSlow);
 
         // Navega para MainActivity após delay
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
 
-            // Mostra toast de boas-vindas no primeiro acesso
-            if (isFirstTime) {
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.welcome_coins), Toast.LENGTH_LONG).show();
+                if (isFirstTime) {
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.welcome_coins), Toast.LENGTH_LONG).show();
+                }
             }
         }, SPLASH_DELAY);
     }

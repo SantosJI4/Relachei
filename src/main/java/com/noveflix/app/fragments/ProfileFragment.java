@@ -44,20 +44,35 @@ public class ProfileFragment extends Fragment {
 
         updateStats(tvCoins, tvEpisodes, tvSaved, tvVipBadge);
 
-        btnVip.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToVip();
+        btnVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).navigateToVip();
+                }
             }
         });
 
-        btnCoins.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show());
+        btnCoins.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(requireContext(), "Em breve: loja de moedas!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        btnHistory.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Em breve: histórico!", Toast.LENGTH_SHORT).show());
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(requireContext(), "Em breve: histórico!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        btnSettings.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Em breve: configurações!", Toast.LENGTH_SHORT).show());
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(requireContext(), "Em breve: configurações!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

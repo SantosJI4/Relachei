@@ -83,7 +83,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
             overlayLocked = itemView.findViewById(R.id.overlay_locked);
         }
 
-        void bind(Episode episode, OnEpisodeActionListener listener) {
+        void bind(final Episode episode, final OnEpisodeActionListener listener) {
             Context ctx = itemView.getContext();
 
             // Thumbnail via Glide
@@ -123,20 +123,38 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
             }
 
             // Play / desbloqueio ao tocar
-            itemView.setOnClickListener(v -> listener.onPlayEpisode(episode));
-            ivPlayBtn.setOnClickListener(v -> listener.onPlayEpisode(episode));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onPlayEpisode(episode);
+                }
+            });
+            ivPlayBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onPlayEpisode(episode);
+                }
+            });
 
             // Like
-            ivLikeBtn.setOnClickListener(v -> {
-                boolean newLiked = !episode.isLiked();
-                listener.onLikeEpisode(episode, newLiked);
-                ivLikeBtn.setImageResource(newLiked
-                        ? R.drawable.ic_heart : R.drawable.ic_heart_outline);
-                tvLikeCount.setText(episode.getFormattedLikes());
+            ivLikeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean newLiked = !episode.isLiked();
+                    listener.onLikeEpisode(episode, newLiked);
+                    ivLikeBtn.setImageResource(newLiked
+                            ? R.drawable.ic_heart : R.drawable.ic_heart_outline);
+                    tvLikeCount.setText(episode.getFormattedLikes());
+                }
             });
 
             // Compartilhar
-            ivShareBtn.setOnClickListener(v -> listener.onShareEpisode(episode));
+            ivShareBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onShareEpisode(episode);
+                }
+            });
         }
 
         private String getCountryName(String code) {

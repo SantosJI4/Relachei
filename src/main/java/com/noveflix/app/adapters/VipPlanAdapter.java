@@ -114,7 +114,12 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
                 }
             }
 
-            btnSubscribe.setOnClickListener(v -> listener.onPlanSelected(plan));
+            btnSubscribe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onPlanSelected(plan);
+                }
+            });
         }
     }
 }
