@@ -76,7 +76,7 @@ public class ServerRepository {
      * Busca o feed do servidor NoveFlix.
      * Se o servidor retornar lista vazia ou falhar, chama tmdbFallback.
      */
-    public void loadFeed(int perPage, FeedCallback callback) {
+    public void loadFeed(int perPage, final FeedCallback callback) {
         api.getFeed(1, perPage).enqueue(new Callback<FeedResponse>() {
             @Override
             public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {

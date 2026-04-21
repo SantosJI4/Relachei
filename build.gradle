@@ -19,10 +19,6 @@ android {
         versionCode 1
         versionName "1.0.0"
         multiDexEnabled true
-
-        // Chave TMDB compilada no BuildConfig (não fica exposta no source)
-        buildConfigField "String", "TMDB_API_KEY", '"684348ba260de2dbe6c437ac08ea68c4"'
-        buildConfigField "String", "TMDB_IMG_BASE", '"https://image.tmdb.org/t/p/w780"'
     }
     buildFeatures {
         buildConfig true

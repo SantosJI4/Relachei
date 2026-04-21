@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
