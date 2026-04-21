@@ -29,14 +29,25 @@ android {
         multiDexEnabled true
     }
     
+    signingConfigs {
+        debug {
+            storeFile file(System.getProperty("user.home") + "/.android/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
     buildTypes {
         release {
             shrinkResources false
             minifyEnabled false
+            signingConfig signingConfigs.debug
         }
         debug {
             shrinkResources false
             minifyEnabled false
+            signingConfig signingConfigs.debug
         }
     }
     
