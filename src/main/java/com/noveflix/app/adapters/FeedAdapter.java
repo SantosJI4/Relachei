@@ -64,6 +64,7 @@ public class FeedAdapter extends BaseAdapter {
         final Episode episode = episodes.get(position);
 
         VideoView vvEpisode   = (VideoView) convertView.findViewById(R.id.vv_episode);
+        ImageView ivThumbnail = (ImageView) convertView.findViewById(R.id.iv_thumbnail);
         ImageView ivLockIcon  = (ImageView) convertView.findViewById(R.id.iv_lock_icon);
         ImageView ivLikeBtn   = (ImageView) convertView.findViewById(R.id.iv_like_btn);
         ImageView ivShareBtn  = (ImageView) convertView.findViewById(R.id.iv_share_btn);
@@ -75,6 +76,20 @@ public class FeedAdapter extends BaseAdapter {
         TextView  tvFreeTag   = (TextView)  convertView.findViewById(R.id.tv_free_tag);
         TextView  tvCoinCost  = (TextView)  convertView.findViewById(R.id.tv_coin_cost);
         View overlayLocked    = convertView.findViewById(R.id.overlay_locked);
+
+        // Thumbnail como capa enquanto o vídeo carrega / está pausado
+        if (ivThumbnail != null) {
+            String thumb = episode.getThumbnailUrl();
+            if (thumb != null && !thumb.isEmpty()) {
+                ivThumbnail.setVisibility(View.VISIBLE);
+                Glide.with(context)
+                        .load(thumb)
+                        .centerCrop()
+                        .into(ivThumbnail);
+            } else {
+                ivThumbnail.setVisibility(View.GONE);
+            }
+        }
 
         if (tvNovela  != null) tvNovela.setText(episode.getNovelaTitle());
         if (tvEpisode != null) tvEpisode.setText("Ep. " + episode.getEpisodeNumber() + " · " + episode.getFormattedDuration());

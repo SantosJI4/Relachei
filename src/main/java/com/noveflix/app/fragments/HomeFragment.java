@@ -135,8 +135,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
         View target = feedListView.getChildAt(childIndex);
         if (target == null) return;
 
-        final VideoView  vv         = (VideoView)  target.findViewById(R.id.vv_episode);
+        final VideoView  vv            = (VideoView)  target.findViewById(R.id.vv_episode);
         final View       playContainer = target.findViewById(R.id.fl_play_container);
+        final android.widget.ImageView ivThumb = (android.widget.ImageView) target.findViewById(R.id.iv_thumbnail);
         if (vv == null) return;
 
         if (position < episodes.size()) {
@@ -145,15 +146,22 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             if (url != null && !url.isEmpty()) {
                 currentPlayingPosition = position;
                 vv.setVideoURI(Uri.parse(url));
-                vv.start();
-                // Esconde container enquanto toca
-                if (playContainer != null) playContainer.setVisibility(View.GONE);
+                vv.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
+                    public void onPrepared(android.media.MediaPlayer mp) {
+                        mp.start();
+                        // Esconde thumbnail quando vídeo começa
+                        if (ivThumb != null) ivThumb.setVisibility(android.view.View.GONE);
+                        if (playContainer != null) playContainer.setVisibility(android.view.View.GONE);
+                    }
+                });
                 vv.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
                     public void onCompletion(android.media.MediaPlayer mp) {
                         mp.start(); // loop
-                        if (playContainer != null) playContainer.setVisibility(View.GONE);
+                        if (ivThumb != null) ivThumb.setVisibility(android.view.View.GONE);
+                        if (playContainer != null) playContainer.setVisibility(android.view.View.GONE);
                     }
                 });
+                vv.start();
             }
         }
     }
@@ -165,6 +173,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeClick
             if (child == null) continue;
             VideoView vv = (VideoView) child.findViewById(R.id.vv_episode);
             if (vv != null && vv.isPlaying()) vv.pause();
+            // Mostra thumbnail de volta quando o vídeo para
+            android.widget.ImageView ivThumb = (android.widget.ImageView) child.findViewById(R.id.iv_thumbnail);
+            if (ivThumb != null) ivThumb.setVisibility(View.VISIBLE);
             View playContainer = child.findViewById(R.id.fl_play_container);
             if (playContainer != null) {
                 playContainer.setVisibility(View.VISIBLE);
