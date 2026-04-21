@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.noveflix.app.R;
@@ -28,16 +27,15 @@ public class CoinPackAdapter extends RecyclerView.Adapter<CoinPackAdapter.CoinPa
         this.listener = listener;
     }
 
-    @NonNull
     @Override
-    public CoinPackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CoinPackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_coin_pack, parent, false);
         return new CoinPackViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CoinPackViewHolder holder, int position) {
+    public void onBindViewHolder(CoinPackViewHolder holder, int position) {
         holder.bind(packs.get(position), listener);
     }
 
@@ -54,7 +52,7 @@ public class CoinPackAdapter extends RecyclerView.Adapter<CoinPackAdapter.CoinPa
         private final TextView tvSavings;
         private final Button   btnBuy;
 
-        CoinPackViewHolder(@NonNull View itemView) {
+        CoinPackViewHolder(View itemView) {
             super(itemView);
             tvName    = itemView.findViewById(R.id.tv_coin_pack_name);
             tvCoins   = itemView.findViewById(R.id.tv_coin_pack_coins);

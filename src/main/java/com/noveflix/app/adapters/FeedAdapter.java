@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,16 +31,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
         this.listener = listener;
     }
 
-    @NonNull
     @Override
-    public EpisodeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EpisodeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_episode_feed, parent, false);
         return new EpisodeViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EpisodeViewHolder holder, int position) {
+    public void onBindViewHolder(EpisodeViewHolder holder, int position) {
         holder.bind(episodes.get(position), listener);
     }
 
@@ -66,7 +64,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.EpisodeViewHol
         private final TextView  tvCoinCost;
         private final View      overlayLocked;
 
-        EpisodeViewHolder(@NonNull View itemView) {
+        EpisodeViewHolder(View itemView) {
             super(itemView);
             ivThumbnail   = itemView.findViewById(R.id.iv_thumbnail);
             ivPlayBtn     = itemView.findViewById(R.id.iv_play_btn);

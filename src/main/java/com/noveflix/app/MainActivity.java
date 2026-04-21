@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showFragment(@NonNull Fragment target) {
+    private void showFragment(Fragment target) {
         if (target == activeFragment) return;
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.hide(activeFragment);

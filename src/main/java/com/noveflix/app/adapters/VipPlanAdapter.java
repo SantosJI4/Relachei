@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.noveflix.app.R;
@@ -29,16 +28,15 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
         this.listener = listener;
     }
 
-    @NonNull
     @Override
-    public VipPlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public VipPlanViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_vip_plan, parent, false);
         return new VipPlanViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VipPlanViewHolder holder, int position) {
+    public void onBindViewHolder(VipPlanViewHolder holder, int position) {
         holder.bind(plans.get(position), listener);
     }
 
@@ -57,7 +55,7 @@ public class VipPlanAdapter extends RecyclerView.Adapter<VipPlanAdapter.VipPlanV
         private final LinearLayout llBenefits;
         private final Button       btnSubscribe;
 
-        VipPlanViewHolder(@NonNull View itemView) {
+        VipPlanViewHolder(View itemView) {
             super(itemView);
             tvName       = itemView.findViewById(R.id.tv_plan_name);
             tvSubtitle   = itemView.findViewById(R.id.tv_plan_subtitle);
