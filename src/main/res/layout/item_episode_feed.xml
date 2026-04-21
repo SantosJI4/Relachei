@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <!-- === VIDEO VIEW (tela cheia, toca inline) === -->
+    <VideoView
+        android:id="@+id/vv_episode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
     <!-- === THUMBNAIL DE FUNDO (full screen) === -->
     <ImageView
         android:id="@+id/iv_thumbnail"
