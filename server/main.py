@@ -223,6 +223,65 @@ def upsert_novela(conn, title: str, country_code: str, description: str = "", po
     return novela_id
 
 
+# ── Página de anúncio (Adsterra) ──────────────────────────────────────────────
+ADSTERRA_SCRIPT = """
+<!-- Cole aqui o código do anúncio gerado pelo Adsterra -->
+"""
+
+@app.get("/ad", response_class=HTMLResponse)
+async def ad_page():
+    html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NoveFlix</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            background: #0A0A0A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: sans-serif;
+            color: #fff;
+        }}
+        .container {{
+            text-align: center;
+            padding: 24px;
+            max-width: 480px;
+            width: 100%;
+        }}
+        .logo {{
+            font-size: 28px;
+            font-weight: bold;
+            color: #E50914;
+            margin-bottom: 8px;
+        }}
+        .subtitle {{
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 24px;
+        }}
+        .ad-area {{
+            min-height: 100px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">NoveFlix</div>
+        <div class="subtitle">Aguarde um momento...</div>
+        <div class="ad-area">
+            {ADSTERRA_SCRIPT}
+        </div>
+    </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
+
+
 # ── API pública ────────────────────────────────────────────────────────────────
 @app.get("/health")
 async def health():
