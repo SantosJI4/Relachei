@@ -6,7 +6,7 @@
     android:background="@color/bg_primary">
 
     <!-- Feed vertical full-screen -->
-    <androidx.viewpager2.widget.ViewPager2
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/feed_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

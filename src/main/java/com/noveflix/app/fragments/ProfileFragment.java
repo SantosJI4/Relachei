@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.noveflix.app.MainActivity;
 import com.noveflix.app.R;

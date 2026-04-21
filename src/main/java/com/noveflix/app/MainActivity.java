@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.support.design.widget.BottomNavigationView;
 import com.noveflix.app.fragments.HomeFragment;
 import com.noveflix.app.fragments.ProfileFragment;
 import com.noveflix.app.fragments.VipFragment;

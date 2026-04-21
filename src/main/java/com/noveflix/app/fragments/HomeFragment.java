@@ -10,8 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.noveflix.app.MainActivity;
 import com.noveflix.app.PlayerActivity;
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActionListener {
 
-    private ViewPager2      viewPager;
+    private RecyclerView      feedRecyclerView;
     private FeedAdapter     adapter;
     private TextView        tvCoinBalance;
     private PrefsManager    prefs;
@@ -45,16 +46,16 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
 
         prefs            = PrefsManager.getInstance(requireContext());
         tvCoinBalance    = view.findViewById(R.id.tv_coin_balance_home);
-        viewPager        = view.findViewById(R.id.feed_view_pager);
+        feedRecyclerView = (RecyclerView) view.findViewById(R.id.feed_view_pager);
         serverRepository = new ServerRepository();
 
         // Carrega dados mock enquanto busca dados reais
         episodes = MockDataProvider.getFeedEpisodes();
         adapter  = new FeedAdapter(episodes, this);
 
-        viewPager.setAdapter(adapter);
-        viewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
-        viewPager.setOffscreenPageLimit(2);
+        LinearLayoutManager lm = new LinearLayoutManager(requireContext());
+        feedRecyclerView.setLayoutManager(lm);
+        feedRecyclerView.setAdapter(adapter);
 
         updateCoinDisplay();
         loadTmdbFeed();
@@ -203,9 +204,9 @@ public class HomeFragment extends Fragment implements FeedAdapter.OnEpisodeActio
                     ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
-        Button btnShortAd = dialog.findViewById(R.id.btn_short_ad);
-        Button btnLongAd  = dialog.findViewById(R.id.btn_long_ad);
-        Button btnCancel  = dialog.findViewById(R.id.btn_ad_cancel);
+        View btnShortAd = dialog.findViewById(R.id.btn_short_ad);
+        View btnLongAd  = dialog.findViewById(R.id.btn_long_ad);
+        Button btnCancel  = (Button) dialog.findViewById(R.id.btn_ad_cancel);
 
         btnShortAd.setOnClickListener(new View.OnClickListener() {
             @Override
